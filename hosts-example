@@ -1,0 +1,12 @@
+[salt_master]
+10.0.100.1      ansible_user=root
+
+[salt_minion]
+10.0.100.1      ansible_user=root
+10.0.100.2      ansible_user=root
+
+[salt_master:vars]
+autosign_hosts = [ "*.fdisk.cc" ]
+
+[salt_minion:vars]
+salt_master = ["10.0.100.1"]
