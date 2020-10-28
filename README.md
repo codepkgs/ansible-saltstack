@@ -9,19 +9,11 @@
 file_roots:
   base:
     - /srv/salt/salt/base
-  dev:
-    - /srv/salt/salt/dev
-  prod:
-    - /srv/salt/salt/prod
 
 # pillar_roots 配置
 pillar_roots:
   base:
     - /srv/salt/pillar/base
-  dev:
-    - /srv/salt/pillar/dev
-  prod:
-    - /srv/salt/pillar/prod
 ```
 
 3. 使用前需要修改 `hosts` 文件，文件格式如下：

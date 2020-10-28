@@ -10,19 +10,12 @@ salt_master:
 file_roots:
   base:
     - /srv/salt/salt/base
-  dev:
-    - /srv/salt/salt/dev
-  prod:
-    - /srv/salt/salt/prod
 
 # pillar_roots 配置
 pillar_roots:
   base:
     - /srv/salt/pillar/base
-  dev:
-    - /srv/salt/pillar/dev
-  prod:
-    - /srv/salt/pillar/prod
+
 # minion_id: <minion_id> # 使用每个机器的FQDN作为minion_id，不要设置该变量。
 
 # 定义自定签发的hosts列表。
