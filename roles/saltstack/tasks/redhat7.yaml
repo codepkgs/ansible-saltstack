@@ -1,0 +1,116 @@
+---
+- name: install python3
+  package:
+    name: python3
+    state: present
+
+- name: copy yum repository to destination
+  copy:
+    src: salt-py3-latest.repo
+    dest: /etc/yum.repos.d/
+    owner: root
+    group: root
+    mode: "0644"
+
+- name: install and config saltstack master
+  block:
+    - name: install saltstack packages [salt-master]
+      tags: salt-master, install-salt-master
+      package:
+        name: "{{ item }}"
+        state: present
+      with_items:
+        - salt-master
+        - salt-ssh
+        - salt-syndic
+        - salt-cloud
+        - salt-api
+    - name: render saltstack master config
+      tags: salt-master, config-salt-master
+      template:
+        src: master.j2
+        dest: /etc/salt/master
+        owner: root
+        group: root
+        mode: "0644"
+      notify:
+        - restart salt-master
+    - name: create saltstack master file_roots directory
+      tags: salt-master, config-salt-master
+      file:
+        path: "{{ item.1 }}"
+        recurse: true
+        owner: root
+        group: root
+        mode: "0755"
+        state: directory
+      with_subelements:
+        - "{{ file_roots | dict2items }}"
+        - "value"
+      when:
+        - file_roots is not none
+      notify:
+        - restart salt-master
+    - name: create saltstack master pillar_roots directory
+      tags: salt-master, config-salt-master
+      file:
+        path: "{{ item.1 }}"
+        owner: root
+        group: root
+        mode: "0755"
+        state: directory
+      with_subelements:
+        - "{{ pillar_roots | dict2items }}"
+        - "value"
+      when:
+        - pillar_roots is not none
+      notify:
+        - restart salt-master
+    - name: render saltstack autosign file
+      tags: salt-master, salt-master-autosign
+      template:
+        src: autosign.j2
+        dest: /etc/salt/autosign.conf
+        owner: root
+        group: root
+        mode: "0644"
+      when:
+        - autosign_hosts is not none
+    - name: ensure saltstack master service is running
+      tags: salt-master, salt-master-service
+      service:
+        name: salt-master
+        state: started
+        enabled: yes
+  when:
+    - salt_role is not none
+    - salt_role | lower == "master"
+
+- name: install and config saltstack minion
+  block:
+    - name: install saltstack packages [salt-minion]
+      tags: salt-minion, install-salt-minion
+      package:
+        name: "{{ item }}"
+        state: present
+      with_items:
+        - salt-minion
+    - name: render saltstack minion config
+      tags: salt-minion, config-salt-minion
+      template:
+        src: minion.j2
+        dest: /etc/salt/minion
+        owner: root
+        group: root
+        mode: "0644"
+      notify:
+        - restart salt-minion
+    - name: ensure saltstack minion service is running
+      tags: salt-minion, salt-minion-service
+      service:
+        name: salt-minion
+        state: started
+        enabled: yes
+  when:
+    - salt_role is not none
+    - salt_role | lower == "minion"

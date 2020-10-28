@@ -1,0 +1,3 @@
+local_clock: False
+ntp_servers: ["ntp.aliyun.com"]
+ntp_restricts: []

@@ -1,0 +1,41 @@
+---
+- name: install ntpd
+  package:
+    name: ntp
+    state: present
+
+- name: copy ntpd config for aliyun ecs
+  copy:
+    src: aliyun_ntp.conf
+    dest: /etc/ntp.conf
+    owner: root
+    group: root
+    mode: "0644"
+  notify:
+    - group ntpd
+  when:
+    - "'alibaba' in ansible_facts.product_name.lower()"
+
+- name: copy ntpd config for other platform
+  template:
+    src: ntp.conf.j2
+    dest: /etc/ntp.conf
+    owner: root
+    group: root
+    mode: "0644"
+  notify:
+    - group ntpd
+  when:
+    - "'alibaba' not in ansible_facts.product_name.lower()"
+
+- name: stop chronyd
+  service:
+    name: chronyd
+    state: stopped
+    enabled: false
+
+- name: ensure ntpd is running
+  service:
+    name: ntpd
+    state: started
+    enabled: yes

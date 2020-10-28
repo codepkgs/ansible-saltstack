@@ -1,0 +1,2485 @@
+#jinja2: lstrip_blocks: True
+
+{% raw %}##### Primary configuration settings #####{% endraw %}
+
+{% raw %}##########################################{% endraw %}
+
+{% raw %}# This configuration file is used to manage the behavior of the Salt Master.{% endraw %}
+
+{% raw %}# Values that are commented out but have an empty line after the comment are{% endraw %}
+
+{% raw %}# defaults that do not need to be set in the config. If there is no blank line{% endraw %}
+
+{% raw %}# after the comment then the value is presented as an example and is not the{% endraw %}
+
+{% raw %}# default.{% endraw %}
+
+
+{% raw %}# Per default, the master will automatically include all config files{% endraw %}
+
+{% raw %}# from master.d/*.conf (master.d is a directory in the same directory{% endraw %}
+
+{% raw %}# as the main master config file).{% endraw %}
+
+{% raw %}#default_include: master.d/*.conf{% endraw %}
+
+
+{% raw %}# The address of the interface to bind to:{% endraw %}
+
+{% raw %}#interface: 0.0.0.0{% endraw %}
+
+
+{% raw %}# Whether the master should listen for IPv6 connections. If this is set to True,{% endraw %}
+
+{% raw %}# the interface option must be adjusted, too. (For example: "interface: '::'"){% endraw %}
+
+{% raw %}#ipv6: False{% endraw %}
+
+
+{% raw %}# The tcp port used by the publisher:{% endraw %}
+
+{% if master_publish_port is defined and master_publish_port | length %}
+publish_port: {{ master_publish_port | int }}
+{% else %}
+{% raw %}#publish_port: 4505{% endraw %}
+
+{% endif %}
+
+{% raw %}# The user under which the salt master will run. Salt will update all{% endraw %}
+
+{% raw %}# permissions to allow the specified user to run the master. The exception is{% endraw %}
+
+{% raw %}# the job cache, which must be deleted if this user is changed. If the{% endraw %}
+
+{% raw %}# modified files cause conflicts, set verify_env to False.{% endraw %}
+
+{% raw %}#user: root{% endraw %}
+
+
+{% raw %}# Tell the master to also use salt-ssh when running commands against minions.{% endraw %}
+
+{% raw %}#enable_ssh_minions: False{% endraw %}
+
+
+{% raw %}# The port used by the communication interface. The ret (return) port is the{% endraw %}
+
+{% raw %}# interface used for the file server, authentication, job returns, etc.\{% endraw %}
+
+{% if master_ret_port is defined and master_ret_port | length %}
+ret_port: {{ master_ret_port | int }}
+{% else %}
+{% raw %}#ret_port: 4506{% endraw %}
+
+{% endif %}
+
+{% raw %}# Specify the location of the daemon process ID file:{% endraw %}
+
+{% raw %}#pidfile: /var/run/salt-master.pid{% endraw %}
+
+
+{% raw %}# The root directory prepended to these options: pki_dir, cachedir,{% endraw %}
+
+{% raw %}# sock_dir, log_file, autosign_file, autoreject_file, extension_modules,{% endraw %}
+
+{% raw %}# key_logfile, pidfile, autosign_grains_dir:{% endraw %}
+
+{% raw %}#root_dir: /{% endraw %}
+
+
+{% raw %}# The path to the master's configuration file.{% endraw %}
+
+{% raw %}#conf_file: /etc/salt/master{% endraw %}
+
+
+{% raw %}# Directory used to store public key data:{% endraw %}
+
+{% raw %}#pki_dir: /etc/salt/pki/master{% endraw %}
+
+
+{% raw %}# Key cache. Increases master speed for large numbers of accepted{% endraw %}
+
+{% raw %}# keys. Available options: 'sched'. (Updates on a fixed schedule.){% endraw %}
+
+{% raw %}# Note that enabling this feature means that minions will not be{% endraw %}
+
+{% raw %}# available to target for up to the length of the maintanence loop{% endraw %}
+
+{% raw %}# which by default is 60s.{% endraw %}
+
+{% raw %}#key_cache: ''{% endraw %}
+
+
+{% raw %}# Directory to store job and cache data:{% endraw %}
+
+{% raw %}# This directory may contain sensitive data and should be protected accordingly.{% endraw %}
+
+{% raw %}#{% endraw %}
+
+{% raw %}#cachedir: /var/cache/salt/master{% endraw %}
+
+
+{% raw %}# Directory for custom modules. This directory can contain subdirectories for{% endraw %}
+
+{% raw %}# each of Salt's module types such as "runners", "output", "wheel", "modules",{% endraw %}
+
+{% raw %}# "states", "returners", "engines", "utils", etc.{% endraw %}
+
+{% raw %}#extension_modules: /var/cache/salt/master/extmods{% endraw %}
+
+
+{% raw %}# Directory for custom modules. This directory can contain subdirectories for{% endraw %}
+
+{% raw %}# each of Salt's module types such as "runners", "output", "wheel", "modules",{% endraw %}
+
+{% raw %}# "states", "returners", "engines", "utils", etc.{% endraw %}
+
+{% raw %}# Like 'extension_modules' but can take an array of paths{% endraw %}
+
+{% raw %}#module_dirs: []{% endraw %}
+
+
+{% raw %}# Verify and set permissions on configuration directories at startup:{% endraw %}
+
+{% raw %}#verify_env: True{% endraw %}
+
+
+{% raw %}# Set the number of hours to keep old job information in the job cache:{% endraw %}
+
+{% raw %}#keep_jobs: 24{% endraw %}
+
+
+{% raw %}# The number of seconds to wait when the client is requesting information{% endraw %}
+
+{% raw %}# about running jobs.{% endraw %}
+
+{% raw %}#gather_job_timeout: 10{% endraw %}
+
+
+{% raw %}# Set the default timeout for the salt command and api. The default is 5{% endraw %}
+
+{% raw %}# seconds.{% endraw %}
+
+{% raw %}#timeout: 5{% endraw %}
+
+
+{% raw %}# The loop_interval option controls the seconds for the master's maintenance{% endraw %}
+
+{% raw %}# process check cycle. This process updates file server backends, cleans the{% endraw %}
+
+{% raw %}# job cache and executes the scheduler.{% endraw %}
+
+{% raw %}#loop_interval: 60{% endraw %}
+
+
+{% raw %}# Set the default outputter used by the salt command. The default is "nested".{% endraw %}
+
+{% raw %}#output: nested{% endraw %}
+
+
+{% raw %}# To set a list of additional directories to search for salt outputters, set the{% endraw %}
+
+{% raw %}# outputter_dirs option.{% endraw %}
+
+{% raw %}#outputter_dirs: []{% endraw %}
+
+
+{% raw %}# Set the default output file used by the salt command. Default is to output{% endraw %}
+
+{% raw %}# to the CLI and not to a file. Functions the same way as the "--out-file"{% endraw %}
+
+{% raw %}# CLI option, only sets this to a single file for all salt commands.{% endraw %}
+
+{% raw %}#output_file: None{% endraw %}
+
+
+{% raw %}# Return minions that timeout when running commands like test.ping{% endraw %}
+
+{% raw %}#show_timeout: True{% endraw %}
+
+
+{% raw %}# Tell the client to display the jid when a job is published.{% endraw %}
+
+{% raw %}#show_jid: False{% endraw %}
+
+
+{% raw %}# By default, output is colored. To disable colored output, set the color value{% endraw %}
+
+{% raw %}# to False.{% endraw %}
+
+{% raw %}#color: True{% endraw %}
+
+
+{% raw %}# Do not strip off the colored output from nested results and state outputs{% endraw %}
+
+{% raw %}# (true by default).{% endraw %}
+
+{% raw %}# strip_colors: False{% endraw %}
+
+
+{% raw %}# To display a summary of the number of minions targeted, the number of{% endraw %}
+
+{% raw %}# minions returned, and the number of minions that did not return, set the{% endraw %}
+
+{% raw %}# cli_summary value to True. (False by default.){% endraw %}
+
+{% raw %}#{% endraw %}
+
+cli_summary: True
+
+
+{% raw %}# Set the directory used to hold unix sockets:{% endraw %}
+
+{% raw %}#sock_dir: /var/run/salt/master{% endraw %}
+
+
+{% raw %}# The master can take a while to start up when lspci and/or dmidecode is used{% endraw %}
+
+{% raw %}# to populate the grains for the master. Enable if you want to see GPU hardware{% endraw %}
+
+{% raw %}# data for your master.{% endraw %}
+
+{% raw %}# enable_gpu_grains: False{% endraw %}
+
+
+{% raw %}# The master maintains a job cache. While this is a great addition, it can be{% endraw %}
+
+{% raw %}# a burden on the master for larger deployments (over 5000 minions).{% endraw %}
+
+{% raw %}# Disabling the job cache will make previously executed jobs unavailable to{% endraw %}
+
+{% raw %}# the jobs system and is not generally recommended.{% endraw %}
+
+{% raw %}#job_cache: True{% endraw %}
+
+
+{% raw %}# Cache minion grains, pillar and mine data via the cache subsystem in the{% endraw %}
+
+{% raw %}# cachedir or a database.{% endraw %}
+
+{% raw %}#minion_data_cache: True{% endraw %}
+
+
+{% raw %}# Cache subsystem module to use for minion data cache.{% endraw %}
+
+{% raw %}#cache: localfs{% endraw %}
+
+{% raw %}# Enables a fast in-memory cache booster and sets the expiration time.{% endraw %}
+
+{% raw %}#memcache_expire_seconds: 0{% endraw %}
+
+{% raw %}# Set a memcache limit in items (bank + key) per cache storage (driver + driver_opts).{% endraw %}
+
+{% raw %}#memcache_max_items: 1024{% endraw %}
+
+{% raw %}# Each time a cache storage got full cleanup all the expired items not just the oldest one.{% endraw %}
+
+{% raw %}#memcache_full_cleanup: False{% endraw %}
+
+{% raw %}# Enable collecting the memcache stats and log it on `debug` log level.{% endraw %}
+
+{% raw %}#memcache_debug: False{% endraw %}
+
+
+{% raw %}# Store all returns in the given returner.{% endraw %}
+
+{% raw %}# Setting this option requires that any returner-specific configuration also{% endraw %}
+
+{% raw %}# be set. See various returners in salt/returners for details on required{% endraw %}
+
+{% raw %}# configuration values. (See also, event_return_queue, and event_return_queue_max_seconds below.){% endraw %}
+
+{% raw %}#{% endraw %}
+
+{% raw %}#event_return: mysql{% endraw %}
+
+
+{% raw %}# On busy systems, enabling event_returns can cause a considerable load on{% endraw %}
+
+{% raw %}# the storage system for returners. Events can be queued on the master and{% endraw %}
+
+{% raw %}# stored in a batched fashion using a single transaction for multiple events.{% endraw %}
+
+{% raw %}# By default, events are not queued.{% endraw %}
+
+{% raw %}#event_return_queue: 0{% endraw %}
+
+
+{% raw %}# In some cases enabling event return queueing can be very helpful, but the bus{% endraw %}
+
+{% raw %}# may not busy enough to flush the queue consistently.  Setting this to a reasonable{% endraw %}
+
+{% raw %}# value (1-30 seconds) will cause the queue to be flushed when the oldest event is older{% endraw %}
+
+{% raw %}# than `event_return_queue_max_seconds` regardless of how many events are in the queue.{% endraw %}
+
+{% raw %}#event_return_queue_max_seconds: 0{% endraw %}
+
+
+{% raw %}# Only return events matching tags in a whitelist, supports glob matches.{% endraw %}
+
+{% raw %}#event_return_whitelist:{% endraw %}
+
+{% raw %}#  - salt/master/a_tag{% endraw %}
+
+{% raw %}#  - salt/run/*/ret{% endraw %}
+
+
+{% raw %}# Store all event returns **except** the tags in a blacklist, supports globs.{% endraw %}
+
+{% raw %}#event_return_blacklist:{% endraw %}
+
+{% raw %}#  - salt/master/not_this_tag{% endraw %}
+
+{% raw %}#  - salt/wheel/*/ret{% endraw %}
+
+
+{% raw %}# Passing very large events can cause the minion to consume large amounts of{% endraw %}
+
+{% raw %}# memory. This value tunes the maximum size of a message allowed onto the{% endraw %}
+
+{% raw %}# master event bus. The value is expressed in bytes.{% endraw %}
+
+{% raw %}#max_event_size: 1048576{% endraw %}
+
+
+{% raw %}# Windows platforms lack posix IPC and must rely on slower TCP based inter-{% endraw %}
+
+{% raw %}# process communications. Set ipc_mode to 'tcp' on such systems{% endraw %}
+
+{% raw %}#ipc_mode: ipc{% endraw %}
+
+
+{% raw %}# Overwrite the default tcp ports used by the minion when ipc_mode is set to 'tcp'{% endraw %}
+
+{% raw %}#tcp_master_pub_port: 4510{% endraw %}
+
+{% raw %}#tcp_master_pull_port: 4511{% endraw %}
+
+
+{% raw %}# By default, the master AES key rotates every 24 hours. The next command{% endraw %}
+
+{% raw %}# following a key rotation will trigger a key refresh from the minion which may{% endraw %}
+
+{% raw %}# result in minions which do not respond to the first command after a key refresh.{% endraw %}
+
+{% raw %}#{% endraw %}
+
+{% raw %}# To tell the master to ping all minions immediately after an AES key refresh, set{% endraw %}
+
+{% raw %}# ping_on_rotate to True. This should mitigate the issue where a minion does not{% endraw %}
+
+{% raw %}# appear to initially respond after a key is rotated.{% endraw %}
+
+{% raw %}#{% endraw %}
+
+{% raw %}# Note that ping_on_rotate may cause high load on the master immediately after{% endraw %}
+
+{% raw %}# the key rotation event as minions reconnect. Consider this carefully if this{% endraw %}
+
+{% raw %}# salt master is managing a large number of minions.{% endraw %}
+
+{% raw %}#{% endraw %}
+
+{% raw %}# If disabled, it is recommended to handle this event by listening for the{% endraw %}
+
+{% raw %}# 'aes_key_rotate' event with the 'key' tag and acting appropriately.{% endraw %}
+
+{% raw %}# ping_on_rotate: False{% endraw %}
+
+
+{% raw %}# By default, the master deletes its cache of minion data when the key for that{% endraw %}
+
+{% raw %}# minion is removed. To preserve the cache after key deletion, set{% endraw %}
+
+{% raw %}# 'preserve_minion_cache' to True.{% endraw %}
+
+{% raw %}#{% endraw %}
+
+{% raw %}# WARNING: This may have security implications if compromised minions auth with{% endraw %}
+
+{% raw %}# a previous deleted minion ID.{% endraw %}
+
+{% raw %}#preserve_minion_cache: False{% endraw %}
+
+
+{% raw %}# Allow or deny minions from requesting their own key revocation{% endraw %}
+
+{% raw %}#allow_minion_key_revoke: True{% endraw %}
+
+
+{% raw %}# If max_minions is used in large installations, the master might experience{% endraw %}
+
+{% raw %}# high-load situations because of having to check the number of connected{% endraw %}
+
+{% raw %}# minions for every authentication. This cache provides the minion-ids of{% endraw %}
+
+{% raw %}# all connected minions to all MWorker-processes and greatly improves the{% endraw %}
+
+{% raw %}# performance of max_minions.{% endraw %}
+
+{% raw %}# con_cache: False{% endraw %}
+
+
+{% raw %}# The master can include configuration from other files. To enable this,{% endraw %}
+
+{% raw %}# pass a list of paths to this option. The paths can be either relative or{% endraw %}
+
+{% raw %}# absolute; if relative, they are considered to be relative to the directory{% endraw %}
+
+{% raw %}# the main master configuration file lives in (this file). Paths can make use{% endraw %}
+
+{% raw %}# of shell-style globbing. If no files are matched by a path passed to this{% endraw %}
+
+{% raw %}# option, then the master will log a warning message.{% endraw %}
+
+{% raw %}#{% endraw %}
+
+{% raw %}# Include a config file from some other path:{% endraw %}
+
+{% raw %}# include: /etc/salt/extra_config{% endraw %}
+
+{% raw %}#{% endraw %}
+
+{% raw %}# Include config from several files and directories:{% endraw %}
+
+{% raw %}# include:{% endraw %}
+
+{% raw %}#   - /etc/salt/extra_config{% endraw %}
+
+
+
+{% raw %}#####  Large-scale tuning settings   #####{% endraw %}
+
+{% raw %}##########################################{% endraw %}
+
+{% raw %}# Max open files{% endraw %}
+
+{% raw %}#{% endraw %}
+
+{% raw %}# Each minion connecting to the master uses AT LEAST one file descriptor, the{% endraw %}
+
+{% raw %}# master subscription connection. If enough minions connect you might start{% endraw %}
+
+{% raw %}# seeing on the console (and then salt-master crashes):{% endraw %}
+
+{% raw %}#   Too many open files (tcp_listener.cpp:335){% endraw %}
+
+{% raw %}#   Aborted (core dumped){% endraw %}
+
+{% raw %}#{% endraw %}
+
+{% raw %}# By default this value will be the one of `ulimit -Hn`, ie, the hard limit for{% endraw %}
+
+{% raw %}# max open files.{% endraw %}
+
+{% raw %}#{% endraw %}
+
+{% raw %}# If you wish to set a different value than the default one, uncomment and{% endraw %}
+
+{% raw %}# configure this setting. Remember that this value CANNOT be higher than the{% endraw %}
+
+{% raw %}# hard limit. Raising the hard limit depends on your OS and/or distribution,{% endraw %}
+
+{% raw %}# a good way to find the limit is to search the internet. For example:{% endraw %}
+
+{% raw %}#   raise max open files hard limit debian{% endraw %}
+
+{% raw %}#{% endraw %}
+
+{% raw %}#max_open_files: 100000{% endraw %}
+
+
+{% raw %}# The number of worker threads to start. These threads are used to manage{% endraw %}
+
+{% raw %}# return calls made from minions to the master. If the master seems to be{% endraw %}
+
+{% raw %}# running slowly, increase the number of threads. This setting can not be{% endraw %}
+
+{% raw %}# set lower than 3.{% endraw %}
+
+{% raw %}#worker_threads: 5{% endraw %}
+
+
+{% raw %}# Set the ZeroMQ high water marks{% endraw %}
+
+{% raw %}# http://api.zeromq.org/3-2:zmq-setsockopt{% endraw %}
+
+
+{% raw %}# The listen queue size / backlog{% endraw %}
+
+{% raw %}#zmq_backlog: 1000{% endraw %}
+
+
+{% raw %}# The publisher interface ZeroMQPubServerChannel{% endraw %}
+
+{% raw %}#pub_hwm: 1000{% endraw %}
+
+
+{% raw %}# The master may allocate memory per-event and not{% endraw %}
+
+{% raw %}# reclaim it.{% endraw %}
+
+{% raw %}# To set a high-water mark for memory allocation, use{% endraw %}
+
+{% raw %}# ipc_write_buffer to set a high-water mark for message{% endraw %}
+
+{% raw %}# buffering.{% endraw %}
+
+{% raw %}# Value: In bytes. Set to 'dynamic' to have Salt select{% endraw %}
+
+{% raw %}# a value for you. Default is disabled.{% endraw %}
+
+{% raw %}# ipc_write_buffer: 'dynamic'{% endraw %}
+
+
+{% raw %}# These two batch settings, batch_safe_limit and batch_safe_size, are used to{% endraw %}
+
+{% raw %}# automatically switch to a batch mode execution. If a command would have been{% endraw %}
+
+{% raw %}# sent to more than <batch_safe_limit> minions, then run the command in{% endraw %}
+
+{% raw %}# batches of <batch_safe_size>. If no batch_safe_size is specified, a default{% endraw %}
+
+{% raw %}# of 8 will be used. If no batch_safe_limit is specified, then no automatic{% endraw %}
+
+{% raw %}# batching will occur.{% endraw %}
+
+{% raw %}#batch_safe_limit: 100{% endraw %}
+
+{% raw %}#batch_safe_size: 8{% endraw %}
+
+
+{% raw %}# Master stats enables stats events to be fired from the master at close{% endraw %}
+
+{% raw %}# to the defined interval{% endraw %}
+
+{% raw %}#master_stats: False{% endraw %}
+
+{% raw %}#master_stats_event_iter: 60{% endraw %}
+
+
+
+{% raw %}#####        Security settings       #####{% endraw %}
+
+{% raw %}##########################################{% endraw %}
+
+{% raw %}# Enable passphrase protection of Master private key.  Although a string value{% endraw %}
+
+{% raw %}# is acceptable; passwords should be stored in an external vaulting mechanism{% endraw %}
+
+{% raw %}# and retrieved via sdb. See https://docs.saltstack.com/en/latest/topics/sdb/.{% endraw %}
+
+{% raw %}# Passphrase protection is off by default but an example of an sdb profile and{% endraw %}
+
+{% raw %}# query is as follows.{% endraw %}
+
+{% raw %}# masterkeyring:{% endraw %}
+
+{% raw %}#  driver: keyring{% endraw %}
+
+{% raw %}#  service: system{% endraw %}
+
+{% raw %}#{% endraw %}
+
+{% raw %}# key_pass: sdb://masterkeyring/key_pass{% endraw %}
+
+
+{% raw %}# Enable passphrase protection of the Master signing_key. This only applies if{% endraw %}
+
+{% raw %}# master_sign_pubkey is set to True.  This is disabled by default.{% endraw %}
+
+{% raw %}# master_sign_pubkey: True{% endraw %}
+
+{% raw %}# signing_key_pass: sdb://masterkeyring/signing_pass{% endraw %}
+
+
+{% raw %}# Enable "open mode", this mode still maintains encryption, but turns off{% endraw %}
+
+{% raw %}# authentication, this is only intended for highly secure environments or for{% endraw %}
+
+{% raw %}# the situation where your keys end up in a bad state. If you run in open mode{% endraw %}
+
+{% raw %}# you do so at your own risk!{% endraw %}
+
+{% raw %}#open_mode: False{% endraw %}
+
+
+{% raw %}# Enable auto_accept, this setting will automatically accept all incoming{% endraw %}
+
+{% raw %}# public keys from the minions. Note that this is insecure.{% endraw %}
+
+{% raw %}#auto_accept: False{% endraw %}
+
+
+{% raw %}# The size of key that should be generated when creating new keys.{% endraw %}
+
+{% raw %}#keysize: 2048{% endraw %}
+
+
+{% raw %}# Time in minutes that an incoming public key with a matching name found in{% endraw %}
+
+{% raw %}# pki_dir/minion_autosign/keyid is automatically accepted. Expired autosign keys{% endraw %}
+
+{% raw %}# are removed when the master checks the minion_autosign directory.{% endraw %}
+
+{% raw %}# 0 equals no timeout{% endraw %}
+
+{% raw %}# autosign_timeout: 120{% endraw %}
+
+
+{% raw %}# If the autosign_file is specified, incoming keys specified in the{% endraw %}
+
+{% raw %}# autosign_file will be automatically accepted. This is insecure.  Regular{% endraw %}
+
+{% raw %}# expressions as well as globing lines are supported. The file must be readonly{% endraw %}
+
+{% raw %}# except for the owner. Use permissive_pki_access to allow the group write access.{% endraw %}
+
+autosign_file: /etc/salt/autosign.conf
+
+
+{% raw %}# Works like autosign_file, but instead allows you to specify minion IDs for{% endraw %}
+
+{% raw %}# which keys will automatically be rejected. Will override both membership in{% endraw %}
+
+{% raw %}# the autosign_file and the auto_accept setting.{% endraw %}
+
+{% raw %}#autoreject_file: /etc/salt/autoreject.conf{% endraw %}
+
+
+{% raw %}# If the autosign_grains_dir is specified, incoming keys from minions with grain{% endraw %}
+
+{% raw %}# values matching those defined in files in this directory will be accepted{% endraw %}
+
+{% raw %}# automatically. This is insecure. Minions need to be configured to send the grains.{% endraw %}
+
+{% raw %}#autosign_grains_dir: /etc/salt/autosign_grains{% endraw %}
+
+
+{% raw %}# Enable permissive access to the salt keys. This allows you to run the{% endraw %}
+
+{% raw %}# master or minion as root, but have a non-root group be given access to{% endraw %}
+
+{% raw %}# your pki_dir. To make the access explicit, root must belong to the group{% endraw %}
+
+{% raw %}# you've given access to. This is potentially quite insecure. If an autosign_file{% endraw %}
+
+{% raw %}# is specified, enabling permissive_pki_access will allow group access to that{% endraw %}
+
+{% raw %}# specific file.{% endraw %}
+
+{% raw %}#permissive_pki_access: False{% endraw %}
+
+
+{% raw %}# Allow users on the master access to execute specific commands on minions.{% endraw %}
+
+{% raw %}# This setting should be treated with care since it opens up execution{% endraw %}
+
+{% raw %}# capabilities to non root users. By default this capability is completely{% endraw %}
+
+{% raw %}# disabled.{% endraw %}
+
+{% raw %}#publisher_acl:{% endraw %}
+
+{% raw %}#  larry:{% endraw %}
+
+{% raw %}#    - test.ping{% endraw %}
+
+{% raw %}#    - network.*{% endraw %}
+
+{% raw %}#{% endraw %}
+
+{% raw %}# Blacklist any of the following users or modules{% endraw %}
+
+{% raw %}#{% endraw %}
+
+{% raw %}# This example would blacklist all non sudo users, including root from{% endraw %}
+
+{% raw %}# running any commands. It would also blacklist any use of the "cmd"{% endraw %}
+
+{% raw %}# module. This is completely disabled by default.{% endraw %}
+
+{% raw %}#{% endraw %}
+
+{% raw %}#{% endraw %}
+
+{% raw %}# Check the list of configured users in client ACL against users on the{% endraw %}
+
+{% raw %}# system and throw errors if they do not exist.{% endraw %}
+
+{% raw %}#client_acl_verify: True{% endraw %}
+
+{% raw %}#{% endraw %}
+
+{% raw %}#publisher_acl_blacklist:{% endraw %}
+
+{% raw %}#  users:{% endraw %}
+
+{% raw %}#    - root{% endraw %}
+
+{% raw %}#    - '^(?!sudo_).*$'   #  all non sudo users{% endraw %}
+
+{% raw %}#  modules:{% endraw %}
+
+{% raw %}#    - cmd{% endraw %}
+
+
+{% raw %}# Enforce publisher_acl & publisher_acl_blacklist when users have sudo{% endraw %}
+
+{% raw %}# access to the salt command.{% endraw %}
+
+{% raw %}#{% endraw %}
+
+{% raw %}#sudo_acl: False{% endraw %}
+
+
+{% raw %}# The external auth system uses the Salt auth modules to authenticate and{% endraw %}
+
+{% raw %}# validate users to access areas of the Salt system.{% endraw %}
+
+{% raw %}#external_auth:{% endraw %}
+
+{% raw %}#  pam:{% endraw %}
+
+{% raw %}#    fred:{% endraw %}
+
+{% raw %}#      - test.*{% endraw %}
+
+{% raw %}#{% endraw %}
+
+{% raw %}# Time (in seconds) for a newly generated token to live. Default: 12 hours{% endraw %}
+
+{% raw %}#token_expire: 43200{% endraw %}
+
+{% raw %}#{% endraw %}
+
+{% raw %}# Allow eauth users to specify the expiry time of the tokens they generate.{% endraw %}
+
+{% raw %}# A boolean applies to all users or a dictionary of whitelisted eauth backends{% endraw %}
+
+{% raw %}# and usernames may be given.{% endraw %}
+
+{% raw %}# token_expire_user_override:{% endraw %}
+
+{% raw %}#   pam:{% endraw %}
+
+{% raw %}#     - fred{% endraw %}
+
+{% raw %}#     - tom{% endraw %}
+
+{% raw %}#   ldap:{% endraw %}
+
+{% raw %}#     - gary{% endraw %}
+
+{% raw %}#{% endraw %}
+
+{% raw %}#token_expire_user_override: False{% endraw %}
+
+
+{% raw %}# Set to True to enable keeping the calculated user's auth list in the token{% endraw %}
+
+{% raw %}# file. This is disabled by default and the auth list is calculated or requested{% endraw %}
+
+{% raw %}# from the eauth driver each time.{% endraw %}
+
+{% raw %}#keep_acl_in_token: False{% endraw %}
+
+
+{% raw %}# Auth subsystem module to use to get authorized access list for a user. By default it's{% endraw %}
+
+{% raw %}# the same module used for external authentication.{% endraw %}
+
+{% raw %}#eauth_acl_module: django{% endraw %}
+
+
+{% raw %}# Allow minions to push files to the master. This is disabled by default, for{% endraw %}
+
+{% raw %}# security purposes.{% endraw %}
+
+{% raw %}#file_recv: False{% endraw %}
+
+
+{% raw %}# Set a hard-limit on the size of the files that can be pushed to the master.{% endraw %}
+
+{% raw %}# It will be interpreted as megabytes. Default: 100{% endraw %}
+
+{% raw %}#file_recv_max_size: 100{% endraw %}
+
+
+{% raw %}# Signature verification on messages published from the master.{% endraw %}
+
+{% raw %}# This causes the master to cryptographically sign all messages published to its event{% endraw %}
+
+{% raw %}# bus, and minions then verify that signature before acting on the message.{% endraw %}
+
+{% raw %}#{% endraw %}
+
+{% raw %}# This is False by default.{% endraw %}
+
+{% raw %}#{% endraw %}
+
+{% raw %}# Note that to facilitate interoperability with masters and minions that are different{% endraw %}
+
+{% raw %}# versions, if sign_pub_messages is True but a message is received by a minion with{% endraw %}
+
+{% raw %}# no signature, it will still be accepted, and a warning message will be logged.{% endraw %}
+
+{% raw %}# Conversely, if sign_pub_messages is False, but a minion receives a signed{% endraw %}
+
+{% raw %}# message it will be accepted, the signature will not be checked, and a warning message{% endraw %}
+
+{% raw %}# will be logged. This behavior went away in Salt 2014.1.0 and these two situations{% endraw %}
+
+{% raw %}# will cause minion to throw an exception and drop the message.{% endraw %}
+
+{% raw %}# sign_pub_messages: False{% endraw %}
+
+
+{% raw %}# Signature verification on messages published from minions{% endraw %}
+
+{% raw %}# This requires that minions cryptographically sign the messages they{% endraw %}
+
+{% raw %}# publish to the master.  If minions are not signing, then log this information{% endraw %}
+
+{% raw %}# at loglevel 'INFO' and drop the message without acting on it.{% endraw %}
+
+{% raw %}# require_minion_sign_messages: False{% endraw %}
+
+
+{% raw %}# The below will drop messages when their signatures do not validate.{% endraw %}
+
+{% raw %}# Note that when this option is False but `require_minion_sign_messages` is True{% endraw %}
+
+{% raw %}# minions MUST sign their messages but the validity of their signatures{% endraw %}
+
+{% raw %}# is ignored.{% endraw %}
+
+{% raw %}# These two config options exist so a Salt infrastructure can be moved{% endraw %}
+
+{% raw %}# to signing minion messages gradually.{% endraw %}
+
+{% raw %}# drop_messages_signature_fail: False{% endraw %}
+
+
+{% raw %}# Use TLS/SSL encrypted connection between master and minion.{% endraw %}
+
+{% raw %}# Can be set to a dictionary containing keyword arguments corresponding to Python's{% endraw %}
+
+{% raw %}# 'ssl.wrap_socket' method.{% endraw %}
+
+{% raw %}# Default is None.{% endraw %}
+
+{% raw %}#ssl:{% endraw %}
+
+{% raw %}#    keyfile: <path_to_keyfile>{% endraw %}
+
+{% raw %}#    certfile: <path_to_certfile>{% endraw %}
+
+{% raw %}#    ssl_version: PROTOCOL_TLSv1_2{% endraw %}
+
+
+{% raw %}#####     Salt-SSH Configuration     #####{% endraw %}
+
+{% raw %}##########################################{% endraw %}
+
+{% raw %}# Define the default salt-ssh roster module to use{% endraw %}
+
+{% raw %}#roster: flat{% endraw %}
+
+
+{% raw %}# Pass in an alternative location for the salt-ssh `flat` roster file{% endraw %}
+
+{% raw %}#roster_file: /etc/salt/roster{% endraw %}
+
+
+{% raw %}# Define locations for `flat` roster files so they can be chosen when using Salt API.{% endraw %}
+
+{% raw %}# An administrator can place roster files into these locations. Then when{% endraw %}
+
+{% raw %}# calling Salt API, parameter 'roster_file' should contain a relative path to{% endraw %}
+
+{% raw %}# these locations. That is, "roster_file=/foo/roster" will be resolved as{% endraw %}
+
+{% raw %}# "/etc/salt/roster.d/foo/roster" etc. This feature prevents passing insecure{% endraw %}
+
+{% raw %}# custom rosters through the Salt API.{% endraw %}
+
+{% raw %}#{% endraw %}
+
+{% raw %}#rosters:{% endraw %}
+
+{% raw %}# - /etc/salt/roster.d{% endraw %}
+
+{% raw %}# - /opt/salt/some/more/rosters{% endraw %}
+
+
+{% raw %}# The ssh password to log in with.{% endraw %}
+
+{% raw %}#ssh_passwd: ''{% endraw %}
+
+
+{% raw %}#The target system's ssh port number.{% endraw %}
+
+{% raw %}#ssh_port: 22{% endraw %}
+
+
+{% raw %}# Comma-separated list of ports to scan.{% endraw %}
+
+{% raw %}#ssh_scan_ports: 22{% endraw %}
+
+
+{% raw %}# Scanning socket timeout for salt-ssh.{% endraw %}
+
+{% raw %}#ssh_scan_timeout: 0.01{% endraw %}
+
+
+{% raw %}# Boolean to run command via sudo.{% endraw %}
+
+{% raw %}#ssh_sudo: False{% endraw %}
+
+
+{% raw %}# Boolean to run ssh_pre_flight script defined in roster. By default{% endraw %}
+
+{% raw %}# the script will only run if the thin_dir does not exist on the targeted{% endraw %}
+
+{% raw %}# minion. This forces the script to run regardless of the thin dir existing{% endraw %}
+
+{% raw %}# or not.{% endraw %}
+
+{% raw %}#ssh_run_pre_flight: True{% endraw %}
+
+
+{% raw %}# Number of seconds to wait for a response when establishing an SSH connection.{% endraw %}
+
+{% raw %}#ssh_timeout: 60{% endraw %}
+
+
+{% raw %}# The user to log in as.{% endraw %}
+
+{% raw %}#ssh_user: root{% endraw %}
+
+
+{% raw %}# The log file of the salt-ssh command:{% endraw %}
+
+{% raw %}#ssh_log_file: /var/log/salt/ssh{% endraw %}
+
+
+{% raw %}# Pass in minion option overrides that will be inserted into the SHIM for{% endraw %}
+
+{% raw %}# salt-ssh calls. The local minion config is not used for salt-ssh. Can be{% endraw %}
+
+{% raw %}# overridden on a per-minion basis in the roster (`minion_opts`){% endraw %}
+
+{% raw %}#ssh_minion_opts:{% endraw %}
+
+{% raw %}#  gpg_keydir: /root/gpg{% endraw %}
+
+
+{% raw %}# Set this to True to default to using ~/.ssh/id_rsa for salt-ssh{% endraw %}
+
+{% raw %}# authentication with minions{% endraw %}
+
+{% raw %}#ssh_use_home_key: False{% endraw %}
+
+
+{% raw %}# Set this to True to default salt-ssh to run with ``-o IdentitiesOnly=yes``.{% endraw %}
+
+{% raw %}# This option is intended for situations where the ssh-agent offers many{% endraw %}
+
+{% raw %}# different identities and allows ssh to ignore those identities and use the{% endraw %}
+
+{% raw %}# only one specified in options.{% endraw %}
+
+{% raw %}#ssh_identities_only: False{% endraw %}
+
+
+{% raw %}# List-only nodegroups for salt-ssh. Each group must be formed as either a{% endraw %}
+
+{% raw %}# comma-separated list, or a YAML list. This option is useful to group minions{% endraw %}
+
+{% raw %}# into easy-to-target groups when using salt-ssh. These groups can then be{% endraw %}
+
+{% raw %}# targeted with the normal -N argument to salt-ssh.{% endraw %}
+
+{% raw %}#ssh_list_nodegroups: {}{% endraw %}
+
+
+{% raw %}# salt-ssh has the ability to update the flat roster file if a minion is not{% endraw %}
+
+{% raw %}# found in the roster.  Set this to True to enable it.{% endraw %}
+
+{% raw %}#ssh_update_roster: False{% endraw %}
+
+
+{% raw %}#####    Master Module Management    #####{% endraw %}
+
+{% raw %}##########################################{% endraw %}
+
+{% raw %}# Manage how master side modules are loaded.{% endraw %}
+
+
+{% raw %}# Add any additional locations to look for master runners:{% endraw %}
+
+{% raw %}#runner_dirs: []{% endraw %}
+
+
+{% raw %}# Add any additional locations to look for master utils:{% endraw %}
+
+{% raw %}#utils_dirs: []{% endraw %}
+
+
+{% raw %}# Enable Cython for master side modules:{% endraw %}
+
+{% raw %}#cython_enable: False{% endraw %}
+
+
+
+{% raw %}#####      State System settings     #####{% endraw %}
+
+{% raw %}##########################################{% endraw %}
+
+{% raw %}# The state system uses a "top" file to tell the minions what environment to{% endraw %}
+
+{% raw %}# use and what modules to use. The state_top file is defined relative to the{% endraw %}
+
+{% raw %}# root of the base environment as defined in "File Server settings" below.{% endraw %}
+
+{% raw %}#state_top: top.sls{% endraw %}
+
+
+{% raw %}# The master_tops option replaces the external_nodes option by creating{% endraw %}
+
+{% raw %}# a plugable system for the generation of external top data. The external_nodes{% endraw %}
+
+{% raw %}# option is deprecated by the master_tops option.{% endraw %}
+
+{% raw %}#{% endraw %}
+
+{% raw %}# To gain the capabilities of the classic external_nodes system, use the{% endraw %}
+
+{% raw %}# following configuration:{% endraw %}
+
+{% raw %}# master_tops:{% endraw %}
+
+{% raw %}#   ext_nodes: <Shell command which returns yaml>{% endraw %}
+
+{% raw %}#{% endraw %}
+
+{% raw %}#master_tops: {}{% endraw %}
+
+
+{% raw %}# The renderer to use on the minions to render the state data{% endraw %}
+
+{% raw %}#renderer: jinja|yaml{% endraw %}
+
+
+{% raw %}# Default Jinja environment options for all templates except sls templates{% endraw %}
+
+jinja_env:
+
+{% raw %}#  block_start_string: '{%'{% endraw %}
+
+{% raw %}#  block_end_string: '%}'{% endraw %}
+
+{% raw %}#  variable_start_string: '{{'{% endraw %}
+
+{% raw %}#  variable_end_string: '}}'{% endraw %}
+
+{% raw %}#  comment_start_string: '{#'{% endraw %}
+
+{% raw %}#  comment_end_string: '#}'{% endraw %}
+
+{% raw %}#  line_statement_prefix:{% endraw %}
+
+{% raw %}#  line_comment_prefix:{% endraw %}
+
+  trim_blocks: True
+
+  lstrip_blocks: True
+
+{% raw %}#  newline_sequence: '\n'{% endraw %}
+
+{% raw %}#  keep_trailing_newline: False{% endraw %}
+
+
+{% raw %}# Jinja environment options for sls templates{% endraw %}
+
+jinja_sls_env:
+
+{% raw %}#  block_start_string: '{%'{% endraw %}
+
+{% raw %}#  block_end_string: '%}'{% endraw %}
+
+{% raw %}#  variable_start_string: '{{'{% endraw %}
+
+{% raw %}#  variable_end_string: '}}'{% endraw %}
+
+{% raw %}#  comment_start_string: '{#'{% endraw %}
+
+{% raw %}#  comment_end_string: '#}'{% endraw %}
+
+{% raw %}#  line_statement_prefix:{% endraw %}
+
+{% raw %}#  line_comment_prefix:{% endraw %}
+
+  trim_blocks: True
+
+  lstrip_blocks: True
+
+{% raw %}#  newline_sequence: '\n'{% endraw %}
+
+{% raw %}#  keep_trailing_newline: False{% endraw %}
+
+
+{% raw %}# The failhard option tells the minions to stop immediately after the first{% endraw %}
+
+{% raw %}# failure detected in the state execution, defaults to False{% endraw %}
+
+{% raw %}#failhard: False{% endraw %}
+
+
+{% raw %}# The state_verbose and state_output settings can be used to change the way{% endraw %}
+
+{% raw %}# state system data is printed to the display. By default all data is printed.{% endraw %}
+
+{% raw %}# The state_verbose setting can be set to True or False, when set to False{% endraw %}
+
+{% raw %}# all data that has a result of True and no changes will be suppressed.{% endraw %}
+
+{% raw %}#state_verbose: True{% endraw %}
+
+
+{% raw %}# The state_output setting controls which results will be output full multi line{% endraw %}
+
+{% raw %}# full, terse - each state will be full/terse{% endraw %}
+
+{% raw %}# mixed - only states with errors will be full{% endraw %}
+
+{% raw %}# changes - states with changes and errors will be full{% endraw %}
+
+{% raw %}# full_id, mixed_id, changes_id and terse_id are also allowed;{% endraw %}
+
+{% raw %}# when set, the state ID will be used as name in the output{% endraw %}
+
+{% raw %}#state_output: full{% endraw %}
+
+
+{% raw %}# The state_output_diff setting changes whether or not the output from{% endraw %}
+
+{% raw %}# successful states is returned. Useful when even the terse output of these{% endraw %}
+
+{% raw %}# states is cluttering the logs. Set it to True to ignore them.{% endraw %}
+
+{% raw %}#state_output_diff: False{% endraw %}
+
+{% if state_output_diff is defined and state_output_diff %}
+state_output_diff: True
+{% endif %}
+
+{% raw %}# Automatically aggregate all states that have support for mod_aggregate by{% endraw %}
+
+{% raw %}# setting to 'True'. Or pass a list of state module names to automatically{% endraw %}
+
+{% raw %}# aggregate just those types.{% endraw %}
+
+{% raw %}#{% endraw %}
+
+{% raw %}# state_aggregate:{% endraw %}
+
+{% raw %}#   - pkg{% endraw %}
+
+{% raw %}#{% endraw %}
+
+{% raw %}#state_aggregate: False{% endraw %}
+
+
+{% raw %}# Send progress events as each function in a state run completes execution{% endraw %}
+
+{% raw %}# by setting to 'True'. Progress events are in the format{% endraw %}
+
+{% raw %}# 'salt/job/<JID>/prog/<MID>/<RUN NUM>'.{% endraw %}
+
+{% raw %}#state_events: False{% endraw %}
+
+
+{% raw %}#####      File Server settings      #####{% endraw %}
+
+{% raw %}##########################################{% endraw %}
+
+{% raw %}# Salt runs a lightweight file server written in zeromq to deliver files to{% endraw %}
+
+{% raw %}# minions. This file server is built into the master daemon and does not{% endraw %}
+
+{% raw %}# require a dedicated port.{% endraw %}
+
+
+{% raw %}# The file server works on environments passed to the master, each environment{% endraw %}
+
+{% raw %}# can have multiple root directories, the subdirectories in the multiple file{% endraw %}
+
+{% raw %}# roots cannot match, otherwise the downloaded files will not be able to be{% endraw %}
+
+{% raw %}# reliably ensured. A base environment is required to house the top file.{% endraw %}
+
+{% raw %}# Example:{% endraw %}
+
+{% raw %}# file_roots:{% endraw %}
+
+{% raw %}#   base:{% endraw %}
+
+{% raw %}#     - /srv/salt/{% endraw %}
+
+{% raw %}#   dev:{% endraw %}
+
+{% raw %}#     - /srv/salt/dev/services{% endraw %}
+
+{% raw %}#     - /srv/salt/dev/states{% endraw %}
+
+{% raw %}#   prod:{% endraw %}
+
+{% raw %}#     - /srv/salt/prod/services{% endraw %}
+
+{% raw %}#     - /srv/salt/prod/states{% endraw %}
+
+{% raw %}#{% endraw %}
+
+{% if file_roots is defined and file_roots | length %}
+file_roots:
+  {% for env in file_roots %}
+  {{ env }}:
+  {% for v in file_roots[env] %}
+    - {{ v }}
+  {% endfor %}
+  {% endfor %}
+{% else %}
+{% raw %}#file_roots:{% endraw %}
+
+{% raw %}#  base:{% endraw %}
+
+{% raw %}#    - /srv/salt{% endraw %}
+
+{% raw %}#{% endraw %}
+{% endif %}
+
+
+{% raw %}# The master_roots setting configures a master-only copy of the file_roots dictionary,{% endraw %}
+
+{% raw %}# used by the state compiler.{% endraw %}
+
+{% raw %}#master_roots:{% endraw %}
+
+{% raw %}#  base:{% endraw %}
+
+{% raw %}#    - /srv/salt-master{% endraw %}
+
+
+{% raw %}# When using multiple environments, each with their own top file, the{% endraw %}
+
+{% raw %}# default behaviour is an unordered merge. To prevent top files from{% endraw %}
+
+{% raw %}# being merged together and instead to only use the top file from the{% endraw %}
+
+{% raw %}# requested environment, set this value to 'same'.{% endraw %}
+
+{% raw %}#top_file_merging_strategy: merge{% endraw %}
+
+
+{% raw %}# To specify the order in which environments are merged, set the ordering{% endraw %}
+
+{% raw %}# in the env_order option. Given a conflict, the last matching value will{% endraw %}
+
+{% raw %}# win.{% endraw %}
+
+{% raw %}#env_order: ['base', 'dev', 'prod']{% endraw %}
+
+
+{% raw %}# If top_file_merging_strategy is set to 'same' and an environment does not{% endraw %}
+
+{% raw %}# contain a top file, the top file in the environment specified by default_top{% endraw %}
+
+{% raw %}# will be used instead.{% endraw %}
+
+{% raw %}#default_top: base{% endraw %}
+
+
+{% raw %}# The hash_type is the hash to use when discovering the hash of a file on{% endraw %}
+
+{% raw %}# the master server. The default is sha256, but md5, sha1, sha224, sha384 and{% endraw %}
+
+{% raw %}# sha512 are also supported.{% endraw %}
+
+{% raw %}#{% endraw %}
+
+{% raw %}# WARNING: While md5 and sha1 are also supported, do not use them due to the{% endraw %}
+
+{% raw %}# high chance of possible collisions and thus security breach.{% endraw %}
+
+{% raw %}#{% endraw %}
+
+{% raw %}# Prior to changing this value, the master should be stopped and all Salt{% endraw %}
+
+{% raw %}# caches should be cleared.{% endraw %}
+
+{% raw %}#hash_type: sha256{% endraw %}
+
+
+{% raw %}# The buffer size in the file server can be adjusted here:{% endraw %}
+
+{% raw %}#file_buffer_size: 1048576{% endraw %}
+
+
+{% raw %}# A regular expression (or a list of expressions) that will be matched{% endraw %}
+
+{% raw %}# against the file path before syncing the modules and states to the minions.{% endraw %}
+
+{% raw %}# This includes files affected by the file.recurse state.{% endraw %}
+
+{% raw %}# For example, if you manage your custom modules and states in subversion{% endraw %}
+
+{% raw %}# and don't want all the '.svn' folders and content synced to your minions,{% endraw %}
+
+{% raw %}# you could set this to '/\.svn($|/)'. By default nothing is ignored.{% endraw %}
+
+{% raw %}#file_ignore_regex:{% endraw %}
+
+{% raw %}#  - '/\.svn($|/)'{% endraw %}
+
+{% raw %}#  - '/\.git($|/)'{% endraw %}
+
+
+{% raw %}# A file glob (or list of file globs) that will be matched against the file{% endraw %}
+
+{% raw %}# path before syncing the modules and states to the minions. This is similar{% endraw %}
+
+{% raw %}# to file_ignore_regex above, but works on globs instead of regex. By default{% endraw %}
+
+{% raw %}# nothing is ignored.{% endraw %}
+
+{% raw %}# file_ignore_glob:{% endraw %}
+
+{% raw %}#  - '*.pyc'{% endraw %}
+
+{% raw %}#  - '*/somefolder/*.bak'{% endraw %}
+
+{% raw %}#  - '*.swp'{% endraw %}
+
+
+{% raw %}# File Server Backend{% endraw %}
+
+{% raw %}#{% endraw %}
+
+{% raw %}# Salt supports a modular fileserver backend system, this system allows{% endraw %}
+
+{% raw %}# the salt master to link directly to third party systems to gather and{% endraw %}
+
+{% raw %}# manage the files available to minions. Multiple backends can be{% endraw %}
+
+{% raw %}# configured and will be searched for the requested file in the order in which{% endraw %}
+
+{% raw %}# they are defined here. The default setting only enables the standard backend{% endraw %}
+
+{% raw %}# "roots" which uses the "file_roots" option.{% endraw %}
+
+{% raw %}#fileserver_backend:{% endraw %}
+
+{% raw %}#  - roots{% endraw %}
+
+{% raw %}#{% endraw %}
+
+{% raw %}# To use multiple backends list them in the order they are searched:{% endraw %}
+
+{% raw %}#fileserver_backend:{% endraw %}
+
+{% raw %}#  - git{% endraw %}
+
+{% raw %}#  - roots{% endraw %}
+
+{% raw %}#{% endraw %}
+
+{% raw %}# Uncomment the line below if you do not want the file_server to follow{% endraw %}
+
+{% raw %}# symlinks when walking the filesystem tree. This is set to True{% endraw %}
+
+{% raw %}# by default. Currently this only applies to the default roots{% endraw %}
+
+{% raw %}# fileserver_backend.{% endraw %}
+
+{% raw %}#fileserver_followsymlinks: False{% endraw %}
+
+{% raw %}#{% endraw %}
+
+{% raw %}# Uncomment the line below if you do not want symlinks to be{% endraw %}
+
+{% raw %}# treated as the files they are pointing to. By default this is set to{% endraw %}
+
+{% raw %}# False. By uncommenting the line below, any detected symlink while listing{% endraw %}
+
+{% raw %}# files on the Master will not be returned to the Minion.{% endraw %}
+
+{% raw %}#fileserver_ignoresymlinks: True{% endraw %}
+
+{% raw %}#{% endraw %}
+
+{% raw %}# By default, the Salt fileserver recurses fully into all defined environments{% endraw %}
+
+{% raw %}# to attempt to find files. To limit this behavior so that the fileserver only{% endraw %}
+
+{% raw %}# traverses directories with SLS files and special Salt directories like _modules,{% endraw %}
+
+{% raw %}# enable the option below. This might be useful for installations where a file root{% endraw %}
+
+{% raw %}# has a very large number of files and performance is impacted. Default is False.{% endraw %}
+
+{% raw %}# fileserver_limit_traversal: False{% endraw %}
+
+{% raw %}#{% endraw %}
+
+{% raw %}# The fileserver can fire events off every time the fileserver is updated,{% endraw %}
+
+{% raw %}# these are disabled by default, but can be easily turned on by setting this{% endraw %}
+
+{% raw %}# flag to True{% endraw %}
+
+{% raw %}#fileserver_events: False{% endraw %}
+
+
+{% raw %}# Git File Server Backend Configuration{% endraw %}
+
+{% raw %}#{% endraw %}
+
+{% raw %}# Optional parameter used to specify the provider to be used for gitfs. Must be{% endraw %}
+
+{% raw %}# either pygit2 or gitpython. If unset, then both will be tried (in that{% endraw %}
+
+{% raw %}# order), and the first one with a compatible version installed will be the{% endraw %}
+
+{% raw %}# provider that is used.{% endraw %}
+
+{% raw %}#{% endraw %}
+
+{% raw %}#gitfs_provider: pygit2{% endraw %}
+
+
+{% raw %}# Along with gitfs_password, is used to authenticate to HTTPS remotes.{% endraw %}
+
+{% raw %}# gitfs_user: ''{% endraw %}
+
+
+{% raw %}# Along with gitfs_user, is used to authenticate to HTTPS remotes.{% endraw %}
+
+{% raw %}# This parameter is not required if the repository does not use authentication.{% endraw %}
+
+{% raw %}#gitfs_password: ''{% endraw %}
+
+
+{% raw %}# By default, Salt will not authenticate to an HTTP (non-HTTPS) remote.{% endraw %}
+
+{% raw %}# This parameter enables authentication over HTTP. Enable this at your own risk.{% endraw %}
+
+{% raw %}#gitfs_insecure_auth: False{% endraw %}
+
+
+{% raw %}# Along with gitfs_privkey (and optionally gitfs_passphrase), is used to{% endraw %}
+
+{% raw %}# authenticate to SSH remotes. This parameter (or its per-remote counterpart){% endraw %}
+
+{% raw %}# is required for SSH remotes.{% endraw %}
+
+{% raw %}#gitfs_pubkey: ''{% endraw %}
+
+
+{% raw %}# Along with gitfs_pubkey (and optionally gitfs_passphrase), is used to{% endraw %}
+
+{% raw %}# authenticate to SSH remotes. This parameter (or its per-remote counterpart){% endraw %}
+
+{% raw %}# is required for SSH remotes.{% endraw %}
+
+{% raw %}#gitfs_privkey: ''{% endraw %}
+
+
+{% raw %}# This parameter is optional, required only when the SSH key being used to{% endraw %}
+
+{% raw %}# authenticate is protected by a passphrase.{% endraw %}
+
+{% raw %}#gitfs_passphrase: ''{% endraw %}
+
+
+{% raw %}# When using the git fileserver backend at least one git remote needs to be{% endraw %}
+
+{% raw %}# defined. The user running the salt master will need read access to the repo.{% endraw %}
+
+{% raw %}#{% endraw %}
+
+{% raw %}# The repos will be searched in order to find the file requested by a client{% endraw %}
+
+{% raw %}# and the first repo to have the file will return it.{% endraw %}
+
+{% raw %}# When using the git backend branches and tags are translated into salt{% endraw %}
+
+{% raw %}# environments.{% endraw %}
+
+{% raw %}# Note: file:// repos will be treated as a remote, so refs you want used must{% endraw %}
+
+{% raw %}# exist in that repo as *local* refs.{% endraw %}
+
+{% raw %}#gitfs_remotes:{% endraw %}
+
+{% raw %}#  - git://github.com/saltstack/salt-states.git{% endraw %}
+
+{% raw %}#  - file:///var/git/saltmaster{% endraw %}
+
+{% raw %}#{% endraw %}
+
+{% raw %}# The gitfs_ssl_verify option specifies whether to ignore ssl certificate{% endraw %}
+
+{% raw %}# errors when contacting the gitfs backend. You might want to set this to{% endraw %}
+
+{% raw %}# false if you're using a git backend that uses a self-signed certificate but{% endraw %}
+
+{% raw %}# keep in mind that setting this flag to anything other than the default of True{% endraw %}
+
+{% raw %}# is a security concern, you may want to try using the ssh transport.{% endraw %}
+
+{% raw %}#gitfs_ssl_verify: True{% endraw %}
+
+{% raw %}#{% endraw %}
+
+{% raw %}# The gitfs_root option gives the ability to serve files from a subdirectory{% endraw %}
+
+{% raw %}# within the repository. The path is defined relative to the root of the{% endraw %}
+
+{% raw %}# repository and defaults to the repository root.{% endraw %}
+
+{% raw %}#gitfs_root: somefolder/otherfolder{% endraw %}
+
+{% raw %}#{% endraw %}
+
+{% raw %}# The refspecs fetched by gitfs remotes{% endraw %}
+
+{% raw %}#gitfs_refspecs:{% endraw %}
+
+{% raw %}#  - '+refs/heads/*:refs/remotes/origin/*'{% endraw %}
+
+{% raw %}#  - '+refs/tags/*:refs/tags/*'{% endraw %}
+
+{% raw %}#{% endraw %}
+
+{% raw %}#{% endraw %}
+
+{% raw %}#####         Pillar settings        #####{% endraw %}
+
+{% raw %}##########################################{% endraw %}
+
+{% raw %}# Salt Pillars allow for the building of global data that can be made selectively{% endraw %}
+
+{% raw %}# available to different minions based on minion grain filtering. The Salt{% endraw %}
+
+{% raw %}# Pillar is laid out in the same fashion as the file server, with environments,{% endraw %}
+
+{% raw %}# a top file and sls files. However, pillar data does not need to be in the{% endraw %}
+
+{% raw %}# highstate format, and is generally just key/value pairs.{% endraw %}
+
+{% raw %}#pillar_roots:{% endraw %}
+
+{% raw %}#  base:{% endraw %}
+
+{% raw %}#    - /srv/pillar{% endraw %}
+
+{% raw %}#{% endraw %}
+
+{% raw %}#ext_pillar:{% endraw %}
+
+{% raw %}#  - hiera: /etc/hiera.yaml{% endraw %}
+
+{% raw %}#  - cmd_yaml: cat /etc/salt/yaml{% endraw %}
+
+{% if pillar_roots is defined and pillar_roots | length %}
+pillar_roots:
+  {% for env in pillar_roots %}
+  {{ env }}:
+  {% for v in pillar_roots[env] %}
+    - {{ v }}
+  {% endfor %}
+  {% endfor %}
+{% endif %}
+
+{% raw %}# A list of paths to be recursively decrypted during pillar compilation.{% endraw %}
+
+{% raw %}# Entries in this list can be formatted either as a simple string, or as a{% endraw %}
+
+{% raw %}# key/value pair, with the key being the pillar location, and the value being{% endraw %}
+
+{% raw %}# the renderer to use for pillar decryption. If the former is used, the{% endraw %}
+
+{% raw %}# renderer specified by decrypt_pillar_default will be used.{% endraw %}
+
+{% raw %}#decrypt_pillar:{% endraw %}
+
+{% raw %}#  - 'foo:bar': gpg{% endraw %}
+
+{% raw %}#  - 'lorem:ipsum:dolor'{% endraw %}
+
+
+{% raw %}# The delimiter used to distinguish nested data structures in the{% endraw %}
+
+{% raw %}# decrypt_pillar option.{% endraw %}
+
+{% raw %}#decrypt_pillar_delimiter: ':'{% endraw %}
+
+
+{% raw %}# The default renderer used for decryption, if one is not specified for a given{% endraw %}
+
+{% raw %}# pillar key in decrypt_pillar.{% endraw %}
+
+{% raw %}#decrypt_pillar_default: gpg{% endraw %}
+
+
+{% raw %}# List of renderers which are permitted to be used for pillar decryption.{% endraw %}
+
+{% raw %}#decrypt_pillar_renderers:{% endraw %}
+
+{% raw %}#  - gpg{% endraw %}
+
+
+{% raw %}# The ext_pillar_first option allows for external pillar sources to populate{% endraw %}
+
+{% raw %}# before file system pillar. This allows for targeting file system pillar from{% endraw %}
+
+{% raw %}# ext_pillar.{% endraw %}
+
+{% raw %}#ext_pillar_first: False{% endraw %}
+
+
+{% raw %}# The external pillars permitted to be used on-demand using pillar.ext{% endraw %}
+
+{% raw %}#on_demand_ext_pillar:{% endraw %}
+
+{% raw %}#  - libvirt{% endraw %}
+
+{% raw %}#  - virtkey{% endraw %}
+
+
+{% raw %}# The pillar_gitfs_ssl_verify option specifies whether to ignore ssl certificate{% endraw %}
+
+{% raw %}# errors when contacting the pillar gitfs backend. You might want to set this to{% endraw %}
+
+{% raw %}# false if you're using a git backend that uses a self-signed certificate but{% endraw %}
+
+{% raw %}# keep in mind that setting this flag to anything other than the default of True{% endraw %}
+
+{% raw %}# is a security concern, you may want to try using the ssh transport.{% endraw %}
+
+{% raw %}#pillar_gitfs_ssl_verify: True{% endraw %}
+
+
+{% raw %}# The pillar_opts option adds the master configuration file data to a dict in{% endraw %}
+
+{% raw %}# the pillar called "master". This is used to set simple configurations in the{% endraw %}
+
+{% raw %}# master config file that can then be used on minions.{% endraw %}
+
+{% raw %}#pillar_opts: False{% endraw %}
+
+
+{% raw %}# The pillar_safe_render_error option prevents the master from passing pillar{% endraw %}
+
+{% raw %}# render errors to the minion. This is set on by default because the error could{% endraw %}
+
+{% raw %}# contain templating data which would give that minion information it shouldn't{% endraw %}
+
+{% raw %}# have, like a password! When set true the error message will only show:{% endraw %}
+
+{% raw %}#   Rendering SLS 'my.sls' failed. Please see master log for details.{% endraw %}
+
+{% raw %}#pillar_safe_render_error: True{% endraw %}
+
+
+{% raw %}# The pillar_source_merging_strategy option allows you to configure merging strategy{% endraw %}
+
+{% raw %}# between different sources. It accepts five values: none, recurse, aggregate, overwrite,{% endraw %}
+
+{% raw %}# or smart. None will not do any merging at all. Recurse will merge recursively mapping of data.{% endraw %}
+
+{% raw %}# Aggregate instructs aggregation of elements between sources that use the #!yamlex renderer. Overwrite{% endraw %}
+
+{% raw %}# will overwrite elements according the order in which they are processed. This is{% endraw %}
+
+{% raw %}# behavior of the 2014.1 branch and earlier. Smart guesses the best strategy based{% endraw %}
+
+{% raw %}# on the "renderer" setting and is the default value.{% endraw %}
+
+{% raw %}#pillar_source_merging_strategy: smart{% endraw %}
+
+
+{% raw %}# Recursively merge lists by aggregating them instead of replacing them.{% endraw %}
+
+{% raw %}#pillar_merge_lists: False{% endraw %}
+
+
+{% raw %}# Set this option to True to force the pillarenv to be the same as the effective{% endraw %}
+
+{% raw %}# saltenv when running states. If pillarenv is specified this option will be{% endraw %}
+
+{% raw %}# ignored.{% endraw %}
+
+{% raw %}#pillarenv_from_saltenv: False{% endraw %}
+
+
+{% raw %}# Set this option to 'True' to force a 'KeyError' to be raised whenever an{% endraw %}
+
+{% raw %}# attempt to retrieve a named value from pillar fails. When this option is set{% endraw %}
+
+{% raw %}# to 'False', the failed attempt returns an empty string. Default is 'False'.{% endraw %}
+
+{% raw %}#pillar_raise_on_missing: False{% endraw %}
+
+
+{% raw %}# Git External Pillar (git_pillar) Configuration Options{% endraw %}
+
+{% raw %}#{% endraw %}
+
+{% raw %}# Specify the provider to be used for git_pillar. Must be either pygit2 or{% endraw %}
+
+{% raw %}# gitpython. If unset, then both will be tried in that same order, and the{% endraw %}
+
+{% raw %}# first one with a compatible version installed will be the provider that{% endraw %}
+
+{% raw %}# is used.{% endraw %}
+
+{% raw %}#git_pillar_provider: pygit2{% endraw %}
+
+
+{% raw %}# If the desired branch matches this value, and the environment is omitted{% endraw %}
+
+{% raw %}# from the git_pillar configuration, then the environment for that git_pillar{% endraw %}
+
+{% raw %}# remote will be base.{% endraw %}
+
+{% raw %}#git_pillar_base: master{% endraw %}
+
+
+{% raw %}# If the branch is omitted from a git_pillar remote, then this branch will{% endraw %}
+
+{% raw %}# be used instead{% endraw %}
+
+{% raw %}#git_pillar_branch: master{% endraw %}
+
+
+{% raw %}# Environment to use for git_pillar remotes. This is normally derived from{% endraw %}
+
+{% raw %}# the branch/tag (or from a per-remote env parameter), but if set this will{% endraw %}
+
+{% raw %}# override the process of deriving the env from the branch/tag name.{% endraw %}
+
+{% raw %}#git_pillar_env: ''{% endraw %}
+
+
+{% raw %}# Path relative to the root of the repository where the git_pillar top file{% endraw %}
+
+{% raw %}# and SLS files are located.{% endraw %}
+
+{% raw %}#git_pillar_root: ''{% endraw %}
+
+
+{% raw %}# Specifies whether or not to ignore SSL certificate errors when contacting{% endraw %}
+
+{% raw %}# the remote repository.{% endraw %}
+
+{% raw %}#git_pillar_ssl_verify: False{% endraw %}
+
+
+{% raw %}# When set to False, if there is an update/checkout lock for a git_pillar{% endraw %}
+
+{% raw %}# remote and the pid written to it is not running on the master, the lock{% endraw %}
+
+{% raw %}# file will be automatically cleared and a new lock will be obtained.{% endraw %}
+
+{% raw %}#git_pillar_global_lock: True{% endraw %}
+
+
+{% raw %}# Git External Pillar Authentication Options{% endraw %}
+
+{% raw %}#{% endraw %}
+
+{% raw %}# Along with git_pillar_password, is used to authenticate to HTTPS remotes.{% endraw %}
+
+{% raw %}#git_pillar_user: ''{% endraw %}
+
+
+{% raw %}# Along with git_pillar_user, is used to authenticate to HTTPS remotes.{% endraw %}
+
+{% raw %}# This parameter is not required if the repository does not use authentication.{% endraw %}
+
+{% raw %}#git_pillar_password: ''{% endraw %}
+
+
+{% raw %}# By default, Salt will not authenticate to an HTTP (non-HTTPS) remote.{% endraw %}
+
+{% raw %}# This parameter enables authentication over HTTP.{% endraw %}
+
+{% raw %}#git_pillar_insecure_auth: False{% endraw %}
+
+
+{% raw %}# Along with git_pillar_privkey (and optionally git_pillar_passphrase),{% endraw %}
+
+{% raw %}# is used to authenticate to SSH remotes.{% endraw %}
+
+{% raw %}#git_pillar_pubkey: ''{% endraw %}
+
+
+{% raw %}# Along with git_pillar_pubkey (and optionally git_pillar_passphrase),{% endraw %}
+
+{% raw %}# is used to authenticate to SSH remotes.{% endraw %}
+
+{% raw %}#git_pillar_privkey: ''{% endraw %}
+
+
+{% raw %}# This parameter is optional, required only when the SSH key being used{% endraw %}
+
+{% raw %}# to authenticate is protected by a passphrase.{% endraw %}
+
+{% raw %}#git_pillar_passphrase: ''{% endraw %}
+
+
+{% raw %}# The refspecs fetched by git_pillar remotes{% endraw %}
+
+{% raw %}#git_pillar_refspecs:{% endraw %}
+
+{% raw %}#  - '+refs/heads/*:refs/remotes/origin/*'{% endraw %}
+
+{% raw %}#  - '+refs/tags/*:refs/tags/*'{% endraw %}
+
+
+{% raw %}# A master can cache pillars locally to bypass the expense of having to render them{% endraw %}
+
+{% raw %}# for each minion on every request. This feature should only be enabled in cases{% endraw %}
+
+{% raw %}# where pillar rendering time is known to be unsatisfactory and any attendant security{% endraw %}
+
+{% raw %}# concerns about storing pillars in a master cache have been addressed.{% endraw %}
+
+{% raw %}#{% endraw %}
+
+{% raw %}# When enabling this feature, be certain to read through the additional ``pillar_cache_*``{% endraw %}
+
+{% raw %}# configuration options to fully understand the tunable parameters and their implications.{% endraw %}
+
+{% raw %}#{% endraw %}
+
+{% raw %}# Note: setting ``pillar_cache: True`` has no effect on targeting Minions with Pillars.{% endraw %}
+
+{% raw %}# See https://docs.saltstack.com/en/latest/topics/targeting/pillar.html{% endraw %}
+
+{% raw %}#pillar_cache: False{% endraw %}
+
+
+{% raw %}# If and only if a master has set ``pillar_cache: True``, the cache TTL controls the amount{% endraw %}
+
+{% raw %}# of time, in seconds, before the cache is considered invalid by a master and a fresh{% endraw %}
+
+{% raw %}# pillar is recompiled and stored.{% endraw %}
+
+{% raw %}#pillar_cache_ttl: 3600{% endraw %}
+
+
+{% raw %}# If and only if a master has set `pillar_cache: True`, one of several storage providers{% endraw %}
+
+{% raw %}# can be utilized.{% endraw %}
+
+{% raw %}#{% endraw %}
+
+{% raw %}# `disk`: The default storage backend. This caches rendered pillars to the master cache.{% endraw %}
+
+{% raw %}#         Rendered pillars are serialized and deserialized as msgpack structures for speed.{% endraw %}
+
+{% raw %}#         Note that pillars are stored UNENCRYPTED. Ensure that the master cache{% endraw %}
+
+{% raw %}#         has permissions set appropriately. (Same defaults are provided.){% endraw %}
+
+{% raw %}#{% endraw %}
+
+{% raw %}# memory: [EXPERIMENTAL] An optional backend for pillar caches which uses a pure-Python{% endraw %}
+
+{% raw %}#         in-memory data structure for maximal performance. There are several caveats,{% endraw %}
+
+{% raw %}#         however. First, because each master worker contains its own in-memory cache,{% endraw %}
+
+{% raw %}#         there is no guarantee of cache consistency between minion requests. This{% endraw %}
+
+{% raw %}#         works best in situations where the pillar rarely if ever changes. Secondly,{% endraw %}
+
+{% raw %}#         and perhaps more importantly, this means that unencrypted pillars will{% endraw %}
+
+{% raw %}#         be accessible to any process which can examine the memory of the ``salt-master``!{% endraw %}
+
+{% raw %}#         This may represent a substantial security risk.{% endraw %}
+
+{% raw %}#{% endraw %}
+
+{% raw %}#pillar_cache_backend: disk{% endraw %}
+
+
+{% raw %}# A master can also cache GPG data locally to bypass the expense of having to render them{% endraw %}
+
+{% raw %}# for each minion on every request. This feature should only be enabled in cases{% endraw %}
+
+{% raw %}# where pillar rendering time is known to be unsatisfactory and any attendant security{% endraw %}
+
+{% raw %}# concerns about storing decrypted GPG data in a master cache have been addressed.{% endraw %}
+
+{% raw %}#{% endraw %}
+
+{% raw %}# When enabling this feature, be certain to read through the additional ``gpg_cache_*``{% endraw %}
+
+{% raw %}# configuration options to fully understand the tunable parameters and their implications.{% endraw %}
+
+{% raw %}#gpg_cache: False{% endraw %}
+
+
+{% raw %}# If and only if a master has set ``gpg_cache: True``, the cache TTL controls the amount{% endraw %}
+
+{% raw %}# of time, in seconds, before the cache is considered invalid by a master and a fresh{% endraw %}
+
+{% raw %}# pillar is recompiled and stored.{% endraw %}
+
+{% raw %}#gpg_cache_ttl: 86400{% endraw %}
+
+
+{% raw %}# If and only if a master has set `gpg_cache: True`, one of several storage providers{% endraw %}
+
+{% raw %}# can be utilized. Available options are the same as ``pillar_cache_backend``.{% endraw %}
+
+{% raw %}#gpg_cache_backend: disk{% endraw %}
+
+
+
+{% raw %}######        Reactor Settings        #####{% endraw %}
+
+{% raw %}###########################################{% endraw %}
+
+{% raw %}# Define a salt reactor. See https://docs.saltstack.com/en/latest/topics/reactor/{% endraw %}
+
+{% raw %}#reactor: []{% endraw %}
+
+
+{% raw %}#Set the TTL for the cache of the reactor configuration.{% endraw %}
+
+{% raw %}#reactor_refresh_interval: 60{% endraw %}
+
+
+{% raw %}#Configure the number of workers for the runner/wheel in the reactor.{% endraw %}
+
+{% raw %}#reactor_worker_threads: 10{% endraw %}
+
+
+{% raw %}#Define the queue size for workers in the reactor.{% endraw %}
+
+{% raw %}#reactor_worker_hwm: 10000{% endraw %}
+
+
+
+{% raw %}#####          Syndic settings       #####{% endraw %}
+
+{% raw %}##########################################{% endraw %}
+
+{% raw %}# The Salt syndic is used to pass commands through a master from a higher{% endraw %}
+
+{% raw %}# master. Using the syndic is simple. If this is a master that will have{% endraw %}
+
+{% raw %}# syndic servers(s) below it, then set the "order_masters" setting to True.{% endraw %}
+
+{% raw %}#{% endraw %}
+
+{% raw %}# If this is a master that will be running a syndic daemon for passthrough, then{% endraw %}
+
+{% raw %}# the "syndic_master" setting needs to be set to the location of the master server{% endraw %}
+
+{% raw %}# to receive commands from.{% endraw %}
+
+
+{% raw %}# Set the order_masters setting to True if this master will command lower{% endraw %}
+
+{% raw %}# masters' syndic interfaces.{% endraw %}
+
+{% raw %}#order_masters: False{% endraw %}
+
+
+{% raw %}# If this master will be running a salt syndic daemon, syndic_master tells{% endraw %}
+
+{% raw %}# this master where to receive commands from.{% endraw %}
+
+{% raw %}#syndic_master: masterofmasters{% endraw %}
+
+
+{% raw %}# This is the 'ret_port' of the MasterOfMaster:{% endraw %}
+
+{% raw %}#syndic_master_port: 4506{% endraw %}
+
+
+{% raw %}# PID file of the syndic daemon:{% endraw %}
+
+{% raw %}#syndic_pidfile: /var/run/salt-syndic.pid{% endraw %}
+
+
+{% raw %}# The log file of the salt-syndic daemon:{% endraw %}
+
+{% raw %}#syndic_log_file: /var/log/salt/syndic{% endraw %}
+
+
+{% raw %}# The behaviour of the multi-syndic when connection to a master of masters failed.{% endraw %}
+
+{% raw %}# Can specify ``random`` (default) or ``ordered``. If set to ``random``, masters{% endraw %}
+
+{% raw %}# will be iterated in random order. If ``ordered`` is specified, the configured{% endraw %}
+
+{% raw %}# order will be used.{% endraw %}
+
+{% raw %}#syndic_failover: random{% endraw %}
+
+
+{% raw %}# The number of seconds for the salt client to wait for additional syndics to{% endraw %}
+
+{% raw %}# check in with their lists of expected minions before giving up.{% endraw %}
+
+{% raw %}#syndic_wait: 5{% endraw %}
+
+
+
+{% raw %}#####      Peer Publish settings     #####{% endraw %}
+
+{% raw %}##########################################{% endraw %}
+
+{% raw %}# Salt minions can send commands to other minions, but only if the minion is{% endraw %}
+
+{% raw %}# allowed to. By default "Peer Publication" is disabled, and when enabled it{% endraw %}
+
+{% raw %}# is enabled for specific minions and specific commands. This allows secure{% endraw %}
+
+{% raw %}# compartmentalization of commands based on individual minions.{% endraw %}
+
+
+{% raw %}# The configuration uses regular expressions to match minions and then a list{% endraw %}
+
+{% raw %}# of regular expressions to match functions. The following will allow the{% endraw %}
+
+{% raw %}# minion authenticated as foo.example.com to execute functions from the test{% endraw %}
+
+{% raw %}# and pkg modules.{% endraw %}
+
+{% raw %}#peer:{% endraw %}
+
+{% raw %}#  foo.example.com:{% endraw %}
+
+{% raw %}#    - test.*{% endraw %}
+
+{% raw %}#    - pkg.*{% endraw %}
+
+{% raw %}#{% endraw %}
+
+{% raw %}# This will allow all minions to execute all commands:{% endraw %}
+
+{% raw %}#peer:{% endraw %}
+
+{% raw %}#  .*:{% endraw %}
+
+{% raw %}#    - .*{% endraw %}
+
+{% raw %}#{% endraw %}
+
+{% raw %}# This is not recommended, since it would allow anyone who gets root on any{% endraw %}
+
+{% raw %}# single minion to instantly have root on all of the minions!{% endraw %}
+
+
+{% raw %}# Minions can also be allowed to execute runners from the salt master.{% endraw %}
+
+{% raw %}# Since executing a runner from the minion could be considered a security risk,{% endraw %}
+
+{% raw %}# it needs to be enabled. This setting functions just like the peer setting{% endraw %}
+
+{% raw %}# except that it opens up runners instead of module functions.{% endraw %}
+
+{% raw %}#{% endraw %}
+
+{% raw %}# All peer runner support is turned off by default and must be enabled before{% endraw %}
+
+{% raw %}# using. This will enable all peer runners for all minions:{% endraw %}
+
+{% raw %}#peer_run:{% endraw %}
+
+{% raw %}#  .*:{% endraw %}
+
+{% raw %}#    - .*{% endraw %}
+
+{% raw %}#{% endraw %}
+
+{% raw %}# To enable just the manage.up runner for the minion foo.example.com:{% endraw %}
+
+{% raw %}#peer_run:{% endraw %}
+
+{% raw %}#  foo.example.com:{% endraw %}
+
+{% raw %}#    - manage.up{% endraw %}
+
+{% raw %}#{% endraw %}
+
+{% raw %}#{% endraw %}
+
+{% raw %}#####         Mine settings     #####{% endraw %}
+
+{% raw %}#####################################{% endraw %}
+
+{% raw %}# Restrict mine.get access from minions. By default any minion has a full access{% endraw %}
+
+{% raw %}# to get all mine data from master cache. In acl definion below, only pcre matches{% endraw %}
+
+{% raw %}# are allowed.{% endraw %}
+
+{% raw %}# mine_get:{% endraw %}
+
+{% raw %}#   .*:{% endraw %}
+
+{% raw %}#     - .*{% endraw %}
+
+{% raw %}#{% endraw %}
+
+{% raw %}# The example below enables minion foo.example.com to get 'network.interfaces' mine{% endraw %}
+
+{% raw %}# data only, minions web* to get all network.* and disk.* mine data and all other{% endraw %}
+
+{% raw %}# minions won't get any mine data.{% endraw %}
+
+{% raw %}# mine_get:{% endraw %}
+
+{% raw %}#   foo.example.com:{% endraw %}
+
+{% raw %}#     - network.interfaces{% endraw %}
+
+{% raw %}#   web.*:{% endraw %}
+
+{% raw %}#     - network.*{% endraw %}
+
+{% raw %}#     - disk.*{% endraw %}
+
+
+
+{% raw %}#####         Logging settings       #####{% endraw %}
+
+{% raw %}##########################################{% endraw %}
+
+{% raw %}# The location of the master log file{% endraw %}
+
+{% raw %}# The master log can be sent to a regular file, local path name, or network{% endraw %}
+
+{% raw %}# location. Remote logging works best when configured to use rsyslogd(8) (e.g.:{% endraw %}
+
+{% raw %}# ``file:///dev/log``), with rsyslogd(8) configured for network logging. The URI{% endraw %}
+
+{% raw %}# format is: <file|udp|tcp>://<host|socketpath>:<port-if-required>/<log-facility>{% endraw %}
+
+{% raw %}#log_file: /var/log/salt/master{% endraw %}
+
+{% raw %}#log_file: file:///dev/log{% endraw %}
+
+{% raw %}#log_file: udp://loghost:10514{% endraw %}
+
+
+{% raw %}#log_file: /var/log/salt/master{% endraw %}
+
+{% raw %}#key_logfile: /var/log/salt/key{% endraw %}
+
+
+{% raw %}# The level of messages to send to the console.{% endraw %}
+
+{% raw %}# One of 'garbage', 'trace', 'debug', info', 'warning', 'error', 'critical'.{% endraw %}
+
+{% raw %}#{% endraw %}
+
+{% raw %}# The following log levels are considered INSECURE and may log sensitive data:{% endraw %}
+
+{% raw %}# ['garbage', 'trace', 'debug']{% endraw %}
+
+{% raw %}#{% endraw %}
+
+{% raw %}#log_level: warning{% endraw %}
+
+
+{% raw %}# The level of messages to send to the log file.{% endraw %}
+
+{% raw %}# One of 'garbage', 'trace', 'debug', 'info', 'warning', 'error', 'critical'.{% endraw %}
+
+{% raw %}# If using 'log_granular_levels' this must be set to the highest desired level.{% endraw %}
+
+{% raw %}#log_level_logfile: warning{% endraw %}
+
+
+{% raw %}# The date and time format used in log messages. Allowed date/time formatting{% endraw %}
+
+{% raw %}# can be seen here: http://docs.python.org/library/time.html#time.strftime{% endraw %}
+
+{% raw %}#log_datefmt: '%H:%M:%S'{% endraw %}
+
+{% raw %}#log_datefmt_logfile: '%Y-%m-%d %H:%M:%S'{% endraw %}
+
+
+{% raw %}# The format of the console logging messages. Allowed formatting options can{% endraw %}
+
+{% raw %}# be seen here: http://docs.python.org/library/logging.html#logrecord-attributes{% endraw %}
+
+{% raw %}#{% endraw %}
+
+{% raw %}# Console log colors are specified by these additional formatters:{% endraw %}
+
+{% raw %}#{% endraw %}
+
+{% raw %}# %(colorlevel)s{% endraw %}
+
+{% raw %}# %(colorname)s{% endraw %}
+
+{% raw %}# %(colorprocess)s{% endraw %}
+
+{% raw %}# %(colormsg)s{% endraw %}
+
+{% raw %}#{% endraw %}
+
+{% raw %}# Since it is desirable to include the surrounding brackets, '[' and ']', in{% endraw %}
+
+{% raw %}# the coloring of the messages, these color formatters also include padding as{% endraw %}
+
+{% raw %}# well.  Color LogRecord attributes are only available for console logging.{% endraw %}
+
+{% raw %}#{% endraw %}
+
+{% raw %}#log_fmt_console: '%(colorlevel)s %(colormsg)s'{% endraw %}
+
+{% raw %}#log_fmt_console: '[%(levelname)-8s] %(message)s'{% endraw %}
+
+{% raw %}#{% endraw %}
+
+{% raw %}#log_fmt_logfile: '%(asctime)s,%(msecs)03d [%(name)-17s][%(levelname)-8s] %(message)s'{% endraw %}
+
+
+{% raw %}# This can be used to control logging levels more specificically.  This{% endraw %}
+
+{% raw %}# example sets the main salt library at the 'warning' level, but sets{% endraw %}
+
+{% raw %}# 'salt.modules' to log at the 'debug' level:{% endraw %}
+
+{% raw %}#   log_granular_levels:{% endraw %}
+
+{% raw %}#     'salt': 'warning'{% endraw %}
+
+{% raw %}#     'salt.modules': 'debug'{% endraw %}
+
+{% raw %}#{% endraw %}
+
+{% raw %}#log_granular_levels: {}{% endraw %}
+
+
+
+{% raw %}#####         Node Groups           ######{% endraw %}
+
+{% raw %}##########################################{% endraw %}
+
+{% raw %}# Node groups allow for logical groupings of minion nodes. A group consists of{% endraw %}
+
+{% raw %}# a group name and a compound target. Nodgroups can reference other nodegroups{% endraw %}
+
+{% raw %}# with 'N@' classifier. Ensure that you do not have circular references.{% endraw %}
+
+{% raw %}#{% endraw %}
+
+{% raw %}#nodegroups:{% endraw %}
+
+{% raw %}#  group1: 'L@foo.domain.com,bar.domain.com,baz.domain.com or bl*.domain.com'{% endraw %}
+
+{% raw %}#  group2: 'G@os:Debian and foo.domain.com'{% endraw %}
+
+{% raw %}#  group3: 'G@os:Debian and N@group1'{% endraw %}
+
+{% raw %}#  group4:{% endraw %}
+
+{% raw %}#    - 'G@foo:bar'{% endraw %}
+
+{% raw %}#    - 'or'{% endraw %}
+
+{% raw %}#    - 'G@foo:baz'{% endraw %}
+
+
+
+{% raw %}#####     Range Cluster settings     #####{% endraw %}
+
+{% raw %}##########################################{% endraw %}
+
+{% raw %}# The range server (and optional port) that serves your cluster information{% endraw %}
+
+{% raw %}# https://github.com/ytoolshed/range/wiki/%22yamlfile%22-module-file-spec{% endraw %}
+
+{% raw %}#{% endraw %}
+
+{% raw %}#range_server: range:80{% endraw %}
+
+
+
+{% raw %}#####  Windows Software Repo settings #####{% endraw %}
+
+{% raw %}###########################################{% endraw %}
+
+{% raw %}# Location of the repo on the master:{% endraw %}
+
+{% raw %}#winrepo_dir_ng: '/srv/salt/win/repo-ng'{% endraw %}
+
+{% raw %}#{% endraw %}
+
+{% raw %}# List of git repositories to include with the local repo:{% endraw %}
+
+{% raw %}#winrepo_remotes_ng:{% endraw %}
+
+{% raw %}#  - 'https://github.com/saltstack/salt-winrepo-ng.git'{% endraw %}
+
+
+
+{% raw %}#####  Windows Software Repo settings - Pre 2015.8 #####{% endraw %}
+
+{% raw %}########################################################{% endraw %}
+
+{% raw %}# Legacy repo settings for pre-2015.8 Windows minions.{% endraw %}
+
+{% raw %}#{% endraw %}
+
+{% raw %}# Location of the repo on the master:{% endraw %}
+
+{% raw %}#winrepo_dir: '/srv/salt/win/repo'{% endraw %}
+
+{% raw %}#{% endraw %}
+
+{% raw %}# Location of the master's repo cache file:{% endraw %}
+
+{% raw %}#winrepo_mastercachefile: '/srv/salt/win/repo/winrepo.p'{% endraw %}
+
+{% raw %}#{% endraw %}
+
+{% raw %}# List of git repositories to include with the local repo:{% endraw %}
+
+{% raw %}#winrepo_remotes:{% endraw %}
+
+{% raw %}#  - 'https://github.com/saltstack/salt-winrepo.git'{% endraw %}
+
+
+{% raw %}# The refspecs fetched by winrepo remotes{% endraw %}
+
+{% raw %}#winrepo_refspecs:{% endraw %}
+
+{% raw %}#  - '+refs/heads/*:refs/remotes/origin/*'{% endraw %}
+
+{% raw %}#  - '+refs/tags/*:refs/tags/*'{% endraw %}
+
+{% raw %}#{% endraw %}
+
+
+{% raw %}#####      Returner settings          ######{% endraw %}
+
+{% raw %}############################################{% endraw %}
+
+{% raw %}# Which returner(s) will be used for minion's result:{% endraw %}
+
+{% raw %}#return: mysql{% endraw %}
+
+
+
+{% raw %}######    Miscellaneous  settings     ######{% endraw %}
+
+{% raw %}############################################{% endraw %}
+
+{% raw %}# Default match type for filtering events tags: startswith, endswith, find, regex, fnmatch{% endraw %}
+
+{% raw %}#event_match_type: startswith{% endraw %}
+
+
+{% raw %}# Save runner returns to the job cache{% endraw %}
+
+{% raw %}#runner_returns: True{% endraw %}
+
+
+{% raw %}# Permanently include any available Python 3rd party modules into thin and minimal Salt{% endraw %}
+
+{% raw %}# when they are generated for Salt-SSH or other purposes.{% endraw %}
+
+{% raw %}# The modules should be named by the names they are actually imported inside the Python.{% endraw %}
+
+{% raw %}# The value of the parameters can be either one module or a comma separated list of them.{% endraw %}
+
+{% raw %}#thin_extra_mods: foo,bar{% endraw %}
+
+{% raw %}#min_extra_mods: foo,bar,baz{% endraw %}
+
+
+
+{% raw %}######      Keepalive settings        ######{% endraw %}
+
+{% raw %}############################################{% endraw %}
+
+{% raw %}# Warning: Failure to set TCP keepalives on the salt-master can result in{% endraw %}
+
+{% raw %}# not detecting the loss of a minion when the connection is lost or when{% endraw %}
+
+{% raw %}# its host has been terminated without first closing the socket.{% endraw %}
+
+{% raw %}# Salt's Presence System depends on this connection status to know if a minion{% endraw %}
+
+{% raw %}# is "present".{% endraw %}
+
+{% raw %}# ZeroMQ now includes support for configuring SO_KEEPALIVE if supported by{% endraw %}
+
+{% raw %}# the OS. If connections between the minion and the master pass through{% endraw %}
+
+{% raw %}# a state tracking device such as a firewall or VPN gateway, there is{% endraw %}
+
+{% raw %}# the risk that it could tear down the connection the master and minion{% endraw %}
+
+{% raw %}# without informing either party that their connection has been taken away.{% endraw %}
+
+{% raw %}# Enabling TCP Keepalives prevents this from happening.{% endraw %}
+
+
+{% raw %}# Overall state of TCP Keepalives, enable (1 or True), disable (0 or False){% endraw %}
+
+{% raw %}# or leave to the OS defaults (-1), on Linux, typically disabled. Default True, enabled.{% endraw %}
+
+{% raw %}#tcp_keepalive: True{% endraw %}
+
+
+{% raw %}# How long before the first keepalive should be sent in seconds. Default 300{% endraw %}
+
+{% raw %}# to send the first keepalive after 5 minutes, OS default (-1) is typically 7200 seconds{% endraw %}
+
+{% raw %}# on Linux see /proc/sys/net/ipv4/tcp_keepalive_time.{% endraw %}
+
+{% raw %}#tcp_keepalive_idle: 300{% endraw %}
+
+
+{% raw %}# How many lost probes are needed to consider the connection lost. Default -1{% endraw %}
+
+{% raw %}# to use OS defaults, typically 9 on Linux, see /proc/sys/net/ipv4/tcp_keepalive_probes.{% endraw %}
+
+{% raw %}#tcp_keepalive_cnt: -1{% endraw %}
+
+
+{% raw %}# How often, in seconds, to send keepalives after the first one. Default -1 to{% endraw %}
+
+{% raw %}# use OS defaults, typically 75 seconds on Linux, see{% endraw %}
+
+{% raw %}# /proc/sys/net/ipv4/tcp_keepalive_intvl.{% endraw %}
+
+{% raw %}#tcp_keepalive_intvl: -1{% endraw %}
+
+
+
+{% raw %}#####         NetAPI settings          #####{% endraw %}
+
+{% raw %}############################################{% endraw %}
+
+{% raw %}# Allow the raw_shell parameter to be used when calling Salt SSH client via API{% endraw %}
+
+{% raw %}#netapi_allow_raw_shell: True{% endraw %}

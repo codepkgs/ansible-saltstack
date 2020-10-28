@@ -1,0 +1,32 @@
+#jinja2: lstrip_blocks: True
+driftfile  /var/lib/ntp/drift
+pidfile    /var/run/ntpd.pid
+logfile    /var/log/ntp.log
+
+# Access Control Support
+restrict    default kod nomodify notrap nopeer noquery
+restrict -6 default kod nomodify notrap nopeer noquery
+restrict ::1
+restrict 127.0.0.1
+{% if ntp_restricts | length > 0 %}
+{% for ntp_restrict in ntp_restricts %}
+restrict {{ ntp_restrict.network }} mask {{ ntp_restrict.netmask }} nomodify notrap noquery nopeer kod
+{% endfor %}
+{% else %}
+restrict 192.168.0.0 mask 255.255.0.0 nomodify notrap nopeer noquery
+restrict 172.16.0.0 mask 255.240.0.0 nomodify notrap nopeer noquery
+restrict 10.0.0.0 mask 255.0.0.0 nomodify notrap nopeer noquery
+{% endif %}
+
+{% if local_clock %}
+# local clock
+server 127.127.1.0
+fudge  127.127.1.0 stratum 10
+{% endif %}
+
+{% for server in ntp_servers %}
+server {{ server }} iburst minpoll 4 maxpoll 10
+restrict {{ server }} nomodify notrap noquery nopeer
+{% endfor %}
+
+disable monitor

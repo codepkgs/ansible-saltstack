@@ -1,0 +1,21 @@
+---
+- hosts: all
+  gather_facts: True
+  roles:
+  - role: ntpd
+    tags: ntpd
+
+- hosts: salt_minion
+  gather_facts: true
+  roles:
+  - role: saltstack
+    tags: saltstack, salt-minion
+    vars:
+      salt_role: minion
+
+- hosts: salt_master
+  roles:
+  - role: saltstack
+    tags: saltstack, salt-master
+    vars:
+      salt_role: master

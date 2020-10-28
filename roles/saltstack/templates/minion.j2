@@ -1,0 +1,1747 @@
+#jinja2: lstrip_blocks: True
+
+{% raw %}##### Primary configuration settings #####{% endraw %}
+
+{% raw %}##########################################{% endraw %}
+
+{% raw %}# This configuration file is used to manage the behavior of the Salt Minion.{% endraw %}
+
+{% raw %}# With the exception of the location of the Salt Master Server, values that are{% endraw %}
+
+{% raw %}# commented out but have an empty line after the comment are defaults that need{% endraw %}
+
+{% raw %}# not be set in the config. If there is no blank line after the comment, the{% endraw %}
+
+{% raw %}# value is presented as an example and is not the default.{% endraw %}
+
+
+{% raw %}# Per default the minion will automatically include all config files{% endraw %}
+
+{% raw %}# from minion.d/*.conf (minion.d is a directory in the same directory{% endraw %}
+
+{% raw %}# as the main minion config file).{% endraw %}
+
+{% raw %}#default_include: minion.d/*.conf{% endraw %}
+
+
+{% raw %}# Set the location of the salt master server. If the master server cannot be{% endraw %}
+
+{% raw %}# resolved, then the minion will fail to start.{% endraw %}
+
+{% if salt_master is defined and salt_master | length %}
+master:
+{% for master in salt_master %}
+  - {{ master }}
+{% endfor %}
+{% else %}
+{% raw %}#master: salt{% endraw %}
+{% endif %}
+
+{% raw %}# Set http proxy information for the minion when doing requests{% endraw %}
+
+{% raw %}#proxy_host:{% endraw %}
+
+{% raw %}#proxy_port:{% endraw %}
+
+{% raw %}#proxy_username:{% endraw %}
+
+{% raw %}#proxy_password:{% endraw %}
+
+
+{% raw %}# List of hosts to bypass HTTP proxy. This key does nothing unless proxy_host etc is{% endraw %}
+
+{% raw %}# configured, it does not support any kind of wildcards.{% endraw %}
+
+{% raw %}#no_proxy: []{% endraw %}
+
+
+{% raw %}# If multiple masters are specified in the 'master' setting, the default behavior{% endraw %}
+
+{% raw %}# is to always try to connect to them in the order they are listed. If random_master{% endraw %}
+
+{% raw %}# is set to True, the order will be randomized upon Minion startup instead. This can{% endraw %}
+
+{% raw %}# be helpful in distributing the load of many minions executing salt-call requests,{% endraw %}
+
+{% raw %}# for example, from a cron job. If only one master is listed, this setting is ignored{% endraw %}
+
+{% raw %}# and a warning will be logged.{% endraw %}
+
+{% raw %}#random_master: False{% endraw %}
+
+
+{% raw %}# NOTE: Deprecated in Salt 2019.2.0. Use 'random_master' instead.{% endraw %}
+
+{% raw %}#master_shuffle: False{% endraw %}
+
+
+{% raw %}# Minions can connect to multiple masters simultaneously (all masters{% endraw %}
+
+{% raw %}# are "hot"), or can be configured to failover if a master becomes{% endraw %}
+
+{% raw %}# unavailable.  Multiple hot masters are configured by setting this{% endraw %}
+
+{% raw %}# value to "str".  Failover masters can be requested by setting{% endraw %}
+
+{% raw %}# to "failover".  MAKE SURE TO SET master_alive_interval if you are{% endraw %}
+
+{% raw %}# using failover.{% endraw %}
+
+{% raw %}# Setting master_type to 'disable' let's you have a running minion (with engines and{% endraw %}
+
+{% raw %}# beacons) without a master connection{% endraw %}
+
+{% raw %}# master_type: str{% endraw %}
+
+
+{% raw %}# Poll interval in seconds for checking if the master is still there.  Only{% endraw %}
+
+{% raw %}# respected if master_type above is "failover". To disable the interval entirely,{% endraw %}
+
+{% raw %}# set the value to -1. (This may be necessary on machines which have high numbers{% endraw %}
+
+{% raw %}# of TCP connections, such as load balancers.){% endraw %}
+
+{% raw %}# master_alive_interval: 30{% endraw %}
+
+
+{% raw %}# If the minion is in multi-master mode and the master_type configuration option{% endraw %}
+
+{% raw %}# is set to "failover", this setting can be set to "True" to force the minion{% endraw %}
+
+{% raw %}# to fail back to the first master in the list if the first master is back online.{% endraw %}
+
+{% raw %}#master_failback: False{% endraw %}
+
+
+{% raw %}# If the minion is in multi-master mode, the "master_type" configuration is set to{% endraw %}
+
+{% raw %}# "failover", and the "master_failback" option is enabled, the master failback{% endraw %}
+
+{% raw %}# interval can be set to ping the top master with this interval, in seconds.{% endraw %}
+
+{% raw %}#master_failback_interval: 0{% endraw %}
+
+
+{% raw %}# Set whether the minion should connect to the master via IPv6:{% endraw %}
+
+{% raw %}#ipv6: False{% endraw %}
+
+
+{% raw %}# Set the number of seconds to wait before attempting to resolve{% endraw %}
+
+{% raw %}# the master hostname if name resolution fails. Defaults to 30 seconds.{% endraw %}
+
+{% raw %}# Set to zero if the minion should shutdown and not retry.{% endraw %}
+
+{% raw %}# retry_dns: 30{% endraw %}
+
+
+{% raw %}# Set the number of times to attempt to resolve{% endraw %}
+
+{% raw %}# the master hostname if name resolution fails. Defaults to None,{% endraw %}
+
+{% raw %}# which will attempt the resolution indefinitely.{% endraw %}
+
+{% raw %}# retry_dns_count: 3{% endraw %}
+
+
+{% raw %}# Set the port used by the master reply and authentication server.{% endraw %}
+
+{% if master_ret_port is defined and master_ret_port | length %}
+master_port: {{ master_ret_port | int }}
+{% else %}
+{% raw %}#master_port: 4506{% endraw %}
+{% endif %}
+
+
+{% raw %}# The user to run salt.{% endraw %}
+
+{% raw %}#user: root{% endraw %}
+
+
+{% raw %}# The user to run salt remote execution commands as via sudo. If this option is{% endraw %}
+
+{% raw %}# enabled then sudo will be used to change the active user executing the remote{% endraw %}
+
+{% raw %}# command. If enabled the user will need to be allowed access via the sudoers{% endraw %}
+
+{% raw %}# file for the user that the salt minion is configured to run as. The most{% endraw %}
+
+{% raw %}# common option would be to use the root user. If this option is set the user{% endraw %}
+
+{% raw %}# option should also be set to a non-root user. If migrating from a root minion{% endraw %}
+
+{% raw %}# to a non root minion the minion cache should be cleared and the minion pki{% endraw %}
+
+{% raw %}# directory will need to be changed to the ownership of the new user.{% endraw %}
+
+{% raw %}#sudo_user: root{% endraw %}
+
+
+{% raw %}# Specify the location of the daemon process ID file.{% endraw %}
+
+{% raw %}#pidfile: /var/run/salt-minion.pid{% endraw %}
+
+
+{% raw %}# The root directory prepended to these options: pki_dir, cachedir, log_file,{% endraw %}
+
+{% raw %}# sock_dir, pidfile.{% endraw %}
+
+{% raw %}#root_dir: /{% endraw %}
+
+
+{% raw %}# The path to the minion's configuration file.{% endraw %}
+
+{% raw %}#conf_file: /etc/salt/minion{% endraw %}
+
+
+{% raw %}# The directory to store the pki information in{% endraw %}
+
+{% raw %}#pki_dir: /etc/salt/pki/minion{% endraw %}
+
+
+{% raw %}# Explicitly declare the id for this minion to use, if left commented the id{% endraw %}
+
+{% raw %}# will be the hostname as returned by the python call: socket.getfqdn(){% endraw %}
+
+{% raw %}# Since salt uses detached ids it is possible to run multiple minions on the{% endraw %}
+
+{% raw %}# same machine but with different ids, this can be useful for salt compute{% endraw %}
+
+{% raw %}# clusters.{% endraw %}
+
+{% if minion_id is defined and minion_id | length %}
+id: {{ minion_id }}
+{% else %}
+{% raw %}#id:{% endraw %}
+{% endif %}
+
+
+{% raw %}# Cache the minion id to a file when the minion's id is not statically defined{% endraw %}
+
+{% raw %}# in the minion config. Defaults to "True". This setting prevents potential{% endraw %}
+
+{% raw %}# problems when automatic minion id resolution changes, which can cause the{% endraw %}
+
+{% raw %}# minion to lose connection with the master. To turn off minion id caching,{% endraw %}
+
+{% raw %}# set this config to ``False``.{% endraw %}
+
+{% raw %}#minion_id_caching: True{% endraw %}
+
+
+{% raw %}# Append a domain to a hostname in the event that it does not exist.  This is{% endraw %}
+
+{% raw %}# useful for systems where socket.getfqdn() does not actually result in a{% endraw %}
+
+{% raw %}# FQDN (for instance, Solaris).{% endraw %}
+
+{% raw %}#append_domain:{% endraw %}
+
+
+{% raw %}# Custom static grains for this minion can be specified here and used in SLS{% endraw %}
+
+{% raw %}# files just like all other grains. This example sets 4 custom grains, with{% endraw %}
+
+{% raw %}# the 'roles' grain having two values that can be matched against.{% endraw %}
+
+{% raw %}#grains:{% endraw %}
+
+{% raw %}#  roles:{% endraw %}
+
+{% raw %}#    - webserver{% endraw %}
+
+{% raw %}#    - memcache{% endraw %}
+
+{% raw %}#  deployment: datacenter4{% endraw %}
+
+{% raw %}#  cabinet: 13{% endraw %}
+
+{% raw %}#  cab_u: 14-15{% endraw %}
+
+{% raw %}#{% endraw %}
+
+{% raw %}# Where cache data goes.{% endraw %}
+
+{% raw %}# This data may contain sensitive data and should be protected accordingly.{% endraw %}
+
+{% raw %}#cachedir: /var/cache/salt/minion{% endraw %}
+
+
+{% raw %}# Append minion_id to these directories.  Helps with{% endraw %}
+
+{% raw %}# multiple proxies and minions running on the same machine.{% endraw %}
+
+{% raw %}# Allowed elements in the list: pki_dir, cachedir, extension_modules{% endraw %}
+
+{% raw %}# Normally not needed unless running several proxies and/or minions on the same machine{% endraw %}
+
+{% raw %}# Defaults to ['cachedir'] for proxies, [] (empty list) for regular minions{% endraw %}
+
+{% raw %}#append_minionid_config_dirs:{% endraw %}
+
+
+{% raw %}# Verify and set permissions on configuration directories at startup.{% endraw %}
+
+{% raw %}#verify_env: True{% endraw %}
+
+
+{% raw %}# The minion can locally cache the return data from jobs sent to it, this{% endraw %}
+
+{% raw %}# can be a good way to keep track of jobs the minion has executed{% endraw %}
+
+{% raw %}# (on the minion side). By default this feature is disabled, to enable, set{% endraw %}
+
+{% raw %}# cache_jobs to True.{% endraw %}
+
+{% raw %}#cache_jobs: False{% endraw %}
+
+
+{% raw %}# Set the directory used to hold unix sockets.{% endraw %}
+
+{% raw %}#sock_dir: /var/run/salt/minion{% endraw %}
+
+
+{% raw %}# In order to calculate the fqdns grain, all the IP addresses from the minion{% endraw %}
+
+{% raw %}# are processed with underlying calls to `socket.gethostbyaddr` which can take{% endraw %}
+
+{% raw %}# 5 seconds to be released (after reaching `socket.timeout`) when there is no{% endraw %}
+
+{% raw %}# fqdn for that IP. These calls to `socket.gethostbyaddr` are processed{% endraw %}
+
+{% raw %}# asynchronously, however, it still adds 5 seconds every time grains are{% endraw %}
+
+{% raw %}# generated if an IP does not resolve. In Windows grains are regenerated each{% endraw %}
+
+{% raw %}# time a new process is spawned. Therefore, the default for Windows is `False`.{% endraw %}
+
+{% raw %}# All other OSes default to `True`{% endraw %}
+
+{% raw %}# enable_fqdn_grains: True{% endraw %}
+
+
+{% raw %}# The minion can take a while to start up when lspci and/or dmidecode is used{% endraw %}
+
+{% raw %}# to populate the grains for the minion. Set this to False if you do not need{% endraw %}
+
+{% raw %}# GPU hardware grains for your minion.{% endraw %}
+
+{% raw %}# enable_gpu_grains: True{% endraw %}
+
+
+{% raw %}# Set the default outputter used by the salt-call command. The default is{% endraw %}
+
+{% raw %}# "nested".{% endraw %}
+
+{% raw %}#output: nested{% endraw %}
+
+
+{% raw %}# To set a list of additional directories to search for salt outputters, set the{% endraw %}
+
+{% raw %}# outputter_dirs option.{% endraw %}
+
+{% raw %}#outputter_dirs: []{% endraw %}
+
+
+{% raw %}# By default output is colored. To disable colored output, set the color value{% endraw %}
+
+{% raw %}# to False.{% endraw %}
+
+{% raw %}#color: True{% endraw %}
+
+
+{% raw %}# Do not strip off the colored output from nested results and state outputs{% endraw %}
+
+{% raw %}# (true by default).{% endraw %}
+
+{% raw %}# strip_colors: False{% endraw %}
+
+
+{% raw %}# Backup files that are replaced by file.managed and file.recurse under{% endraw %}
+
+{% raw %}# 'cachedir'/file_backup relative to their original location and appended{% endraw %}
+
+{% raw %}# with a timestamp. The only valid setting is "minion". Disabled by default.{% endraw %}
+
+{% raw %}#{% endraw %}
+
+{% raw %}# Alternatively this can be specified for each file in state files:{% endraw %}
+
+{% raw %}# /etc/ssh/sshd_config:{% endraw %}
+
+{% raw %}#   file.managed:{% endraw %}
+
+{% raw %}#     - source: salt://ssh/sshd_config{% endraw %}
+
+{% raw %}#     - backup: minion{% endraw %}
+
+{% raw %}#{% endraw %}
+
+{% raw %}#backup_mode: minion{% endraw %}
+
+
+{% raw %}# When waiting for a master to accept the minion's public key, salt will{% endraw %}
+
+{% raw %}# continuously attempt to reconnect until successful. This is the time, in{% endraw %}
+
+{% raw %}# seconds, between those reconnection attempts.{% endraw %}
+
+{% raw %}#acceptance_wait_time: 10{% endraw %}
+
+
+{% raw %}# If this is nonzero, the time between reconnection attempts will increase by{% endraw %}
+
+{% raw %}# acceptance_wait_time seconds per iteration, up to this maximum. If this is{% endraw %}
+
+{% raw %}# set to zero, the time between reconnection attempts will stay constant.{% endraw %}
+
+{% raw %}#acceptance_wait_time_max: 0{% endraw %}
+
+
+{% raw %}# If the master rejects the minion's public key, retry instead of exiting.{% endraw %}
+
+{% raw %}# Rejected keys will be handled the same as waiting on acceptance.{% endraw %}
+
+{% raw %}#rejected_retry: False{% endraw %}
+
+
+{% raw %}# When the master key changes, the minion will try to re-auth itself to receive{% endraw %}
+
+{% raw %}# the new master key. In larger environments this can cause a SYN flood on the{% endraw %}
+
+{% raw %}# master because all minions try to re-auth immediately. To prevent this and{% endraw %}
+
+{% raw %}# have a minion wait for a random amount of time, use this optional parameter.{% endraw %}
+
+{% raw %}# The wait-time will be a random number of seconds between 0 and the defined value.{% endraw %}
+
+{% raw %}#random_reauth_delay: 60{% endraw %}
+
+
+
+{% raw %}# To avoid overloading a master when many minions startup at once, a randomized{% endraw %}
+
+{% raw %}# delay may be set to tell the minions to wait before connecting to the master.{% endraw %}
+
+{% raw %}# This value is the number of seconds to choose from for a random number. For{% endraw %}
+
+{% raw %}# example, setting this value to 60 will choose a random number of seconds to delay{% endraw %}
+
+{% raw %}# on startup between zero seconds and sixty seconds. Setting to '0' will disable{% endraw %}
+
+{% raw %}# this feature.{% endraw %}
+
+{% raw %}#random_startup_delay: 0{% endraw %}
+
+
+{% raw %}# When waiting for a master to accept the minion's public key, salt will{% endraw %}
+
+{% raw %}# continuously attempt to reconnect until successful. This is the timeout value,{% endraw %}
+
+{% raw %}# in seconds, for each individual attempt. After this timeout expires, the minion{% endraw %}
+
+{% raw %}# will wait for acceptance_wait_time seconds before trying again. Unless your master{% endraw %}
+
+{% raw %}# is under unusually heavy load, this should be left at the default.{% endraw %}
+
+{% raw %}#auth_timeout: 60{% endraw %}
+
+
+{% raw %}# Number of consecutive SaltReqTimeoutError that are acceptable when trying to{% endraw %}
+
+{% raw %}# authenticate.{% endraw %}
+
+{% raw %}#auth_tries: 7{% endraw %}
+
+
+{% raw %}# The number of attempts to connect to a master before giving up.{% endraw %}
+
+{% raw %}# Set this to -1 for unlimited attempts. This allows for a master to have{% endraw %}
+
+{% raw %}# downtime and the minion to reconnect to it later when it comes back up.{% endraw %}
+
+{% raw %}# In 'failover' mode, it is the number of attempts for each set of masters.{% endraw %}
+
+{% raw %}# In this mode, it will cycle through the list of masters for each attempt.{% endraw %}
+
+{% raw %}#{% endraw %}
+
+{% raw %}# This is different than auth_tries because auth_tries attempts to{% endraw %}
+
+{% raw %}# retry auth attempts with a single master. auth_tries is under the{% endraw %}
+
+{% raw %}# assumption that you can connect to the master but not gain{% endraw %}
+
+{% raw %}# authorization from it. master_tries will still cycle through all{% endraw %}
+
+{% raw %}# the masters in a given try, so it is appropriate if you expect{% endraw %}
+
+{% raw %}# occasional downtime from the master(s).{% endraw %}
+
+{% raw %}#master_tries: 1{% endraw %}
+
+
+{% raw %}# If authentication fails due to SaltReqTimeoutError during a ping_interval,{% endraw %}
+
+{% raw %}# cause sub minion process to restart.{% endraw %}
+
+{% raw %}#auth_safemode: False{% endraw %}
+
+
+{% raw %}# Ping Master to ensure connection is alive (minutes).{% endraw %}
+
+{% raw %}#ping_interval: 0{% endraw %}
+
+
+{% raw %}# To auto recover minions if master changes IP address (DDNS){% endraw %}
+
+{% raw %}#    auth_tries: 10{% endraw %}
+
+{% raw %}#    auth_safemode: False{% endraw %}
+
+{% raw %}#    ping_interval: 2{% endraw %}
+
+{% raw %}#{% endraw %}
+
+{% raw %}# Minions won't know master is missing until a ping fails. After the ping fail,{% endraw %}
+
+{% raw %}# the minion will attempt authentication and likely fails out and cause a restart.{% endraw %}
+
+{% raw %}# When the minion restarts it will resolve the masters IP and attempt to reconnect.{% endraw %}
+
+
+{% raw %}# If you don't have any problems with syn-floods, don't bother with the{% endraw %}
+
+{% raw %}# three recon_* settings described below, just leave the defaults!{% endraw %}
+
+{% raw %}#{% endraw %}
+
+{% raw %}# The ZeroMQ pull-socket that binds to the masters publishing interface tries{% endraw %}
+
+{% raw %}# to reconnect immediately, if the socket is disconnected (for example if{% endraw %}
+
+{% raw %}# the master processes are restarted). In large setups this will have all{% endraw %}
+
+{% raw %}# minions reconnect immediately which might flood the master (the ZeroMQ-default{% endraw %}
+
+{% raw %}# is usually a 100ms delay). To prevent this, these three recon_* settings{% endraw %}
+
+{% raw %}# can be used.{% endraw %}
+
+{% raw %}# recon_default: the interval in milliseconds that the socket should wait before{% endraw %}
+
+{% raw %}#                trying to reconnect to the master (1000ms = 1 second){% endraw %}
+
+{% raw %}#{% endraw %}
+
+{% raw %}# recon_max: the maximum time a socket should wait. each interval the time to wait{% endraw %}
+
+{% raw %}#            is calculated by doubling the previous time. if recon_max is reached,{% endraw %}
+
+{% raw %}#            it starts again at recon_default. Short example:{% endraw %}
+
+{% raw %}#{% endraw %}
+
+{% raw %}#            reconnect 1: the socket will wait 'recon_default' milliseconds{% endraw %}
+
+{% raw %}#            reconnect 2: 'recon_default' * 2{% endraw %}
+
+{% raw %}#            reconnect 3: ('recon_default' * 2) * 2{% endraw %}
+
+{% raw %}#            reconnect 4: value from previous interval * 2{% endraw %}
+
+{% raw %}#            reconnect 5: value from previous interval * 2{% endraw %}
+
+{% raw %}#            reconnect x: if value >= recon_max, it starts again with recon_default{% endraw %}
+
+{% raw %}#{% endraw %}
+
+{% raw %}# recon_randomize: generate a random wait time on minion start. The wait time will{% endraw %}
+
+{% raw %}#                  be a random value between recon_default and recon_default +{% endraw %}
+
+{% raw %}#                  recon_max. Having all minions reconnect with the same recon_default{% endraw %}
+
+{% raw %}#                  and recon_max value kind of defeats the purpose of being able to{% endraw %}
+
+{% raw %}#                  change these settings. If all minions have the same values and your{% endraw %}
+
+{% raw %}#                  setup is quite large (several thousand minions), they will still{% endraw %}
+
+{% raw %}#                  flood the master. The desired behavior is to have timeframe within{% endraw %}
+
+{% raw %}#                  all minions try to reconnect.{% endraw %}
+
+{% raw %}#{% endraw %}
+
+{% raw %}# Example on how to use these settings. The goal: have all minions reconnect within a{% endraw %}
+
+{% raw %}# 60 second timeframe on a disconnect.{% endraw %}
+
+{% raw %}# recon_default: 1000{% endraw %}
+
+{% raw %}# recon_max: 59000{% endraw %}
+
+{% raw %}# recon_randomize: True{% endraw %}
+
+{% raw %}#{% endraw %}
+
+{% raw %}# Each minion will have a randomized reconnect value between 'recon_default'{% endraw %}
+
+{% raw %}# and 'recon_default + recon_max', which in this example means between 1000ms{% endraw %}
+
+{% raw %}# 60000ms (or between 1 and 60 seconds). The generated random-value will be{% endraw %}
+
+{% raw %}# doubled after each attempt to reconnect. Lets say the generated random{% endraw %}
+
+{% raw %}# value is 11 seconds (or 11000ms).{% endraw %}
+
+{% raw %}# reconnect 1: wait 11 seconds{% endraw %}
+
+{% raw %}# reconnect 2: wait 22 seconds{% endraw %}
+
+{% raw %}# reconnect 3: wait 33 seconds{% endraw %}
+
+{% raw %}# reconnect 4: wait 44 seconds{% endraw %}
+
+{% raw %}# reconnect 5: wait 55 seconds{% endraw %}
+
+{% raw %}# reconnect 6: wait time is bigger than 60 seconds (recon_default + recon_max){% endraw %}
+
+{% raw %}# reconnect 7: wait 11 seconds{% endraw %}
+
+{% raw %}# reconnect 8: wait 22 seconds{% endraw %}
+
+{% raw %}# reconnect 9: wait 33 seconds{% endraw %}
+
+{% raw %}# reconnect x: etc.{% endraw %}
+
+{% raw %}#{% endraw %}
+
+{% raw %}# In a setup with ~6000 thousand hosts these settings would average the reconnects{% endraw %}
+
+{% raw %}# to about 100 per second and all hosts would be reconnected within 60 seconds.{% endraw %}
+
+{% raw %}# recon_default: 100{% endraw %}
+
+{% raw %}# recon_max: 5000{% endraw %}
+
+{% raw %}# recon_randomize: False{% endraw %}
+
+{% raw %}#{% endraw %}
+
+{% raw %}#{% endraw %}
+
+{% raw %}# The loop_interval sets how long in seconds the minion will wait between{% endraw %}
+
+{% raw %}# evaluating the scheduler and running cleanup tasks.  This defaults to 1{% endraw %}
+
+{% raw %}# second on the minion scheduler.{% endraw %}
+
+{% raw %}#loop_interval: 1{% endraw %}
+
+
+{% raw %}# Some installations choose to start all job returns in a cache or a returner{% endraw %}
+
+{% raw %}# and forgo sending the results back to a master. In this workflow, jobs{% endraw %}
+
+{% raw %}# are most often executed with --async from the Salt CLI and then results{% endraw %}
+
+{% raw %}# are evaluated by examining job caches on the minions or any configured returners.{% endraw %}
+
+{% raw %}# WARNING: Setting this to False will **disable** returns back to the master.{% endraw %}
+
+{% raw %}#pub_ret: True{% endraw %}
+
+
+
+{% raw %}# The grains can be merged, instead of overridden, using this option.{% endraw %}
+
+{% raw %}# This allows custom grains to defined different subvalues of a dictionary{% endraw %}
+
+{% raw %}# grain. By default this feature is disabled, to enable set grains_deep_merge{% endraw %}
+
+{% raw %}# to ``True``.{% endraw %}
+
+{% raw %}#grains_deep_merge: False{% endraw %}
+
+
+{% raw %}# The grains_refresh_every setting allows for a minion to periodically check{% endraw %}
+
+{% raw %}# its grains to see if they have changed and, if so, to inform the master{% endraw %}
+
+{% raw %}# of the new grains. This operation is moderately expensive, therefore{% endraw %}
+
+{% raw %}# care should be taken not to set this value too low.{% endraw %}
+
+{% raw %}#{% endraw %}
+
+{% raw %}# Note: This value is expressed in __minutes__!{% endraw %}
+
+{% raw %}#{% endraw %}
+
+{% raw %}# A value of 10 minutes is a reasonable default.{% endraw %}
+
+{% raw %}#{% endraw %}
+
+{% raw %}# If the value is set to zero, this check is disabled.{% endraw %}
+
+{% raw %}#grains_refresh_every: 1{% endraw %}
+
+
+{% raw %}# Cache grains on the minion. Default is False.{% endraw %}
+
+{% raw %}#grains_cache: False{% endraw %}
+
+
+{% raw %}# Cache rendered pillar data on the minion. Default is False.{% endraw %}
+
+{% raw %}# This may cause 'cachedir'/pillar to contain sensitive data that should be{% endraw %}
+
+{% raw %}# protected accordingly.{% endraw %}
+
+{% raw %}#minion_pillar_cache: False{% endraw %}
+
+
+{% raw %}# Grains cache expiration, in seconds. If the cache file is older than this{% endraw %}
+
+{% raw %}# number of seconds then the grains cache will be dumped and fully re-populated{% endraw %}
+
+{% raw %}# with fresh data. Defaults to 5 minutes. Will have no effect if 'grains_cache'{% endraw %}
+
+{% raw %}# is not enabled.{% endraw %}
+
+{% raw %}# grains_cache_expiration: 300{% endraw %}
+
+
+{% raw %}# Determines whether or not the salt minion should run scheduled mine updates.{% endraw %}
+
+{% raw %}# Defaults to "True". Set to "False" to disable the scheduled mine updates{% endraw %}
+
+{% raw %}# (this essentially just does not add the mine update function to the minion's{% endraw %}
+
+{% raw %}# scheduler).{% endraw %}
+
+{% raw %}#mine_enabled: True{% endraw %}
+
+
+{% raw %}# Determines whether or not scheduled mine updates should be accompanied by a job{% endraw %}
+
+{% raw %}# return for the job cache. Defaults to "False". Set to "True" to include job{% endraw %}
+
+{% raw %}# returns in the job cache for mine updates.{% endraw %}
+
+{% raw %}#mine_return_job: False{% endraw %}
+
+
+{% raw %}# Example functions that can be run via the mine facility{% endraw %}
+
+{% raw %}# NO mine functions are established by default.{% endraw %}
+
+{% raw %}# Note these can be defined in the minion's pillar as well.{% endraw %}
+
+{% raw %}#mine_functions:{% endraw %}
+
+{% raw %}#  test.ping: []{% endraw %}
+
+{% raw %}#  network.ip_addrs:{% endraw %}
+
+{% raw %}#    interface: eth0{% endraw %}
+
+{% raw %}#    cidr: '10.0.0.0/8'{% endraw %}
+
+
+{% raw %}# The number of minutes between mine updates.{% endraw %}
+
+{% raw %}#mine_interval: 60{% endraw %}
+
+
+{% raw %}# Windows platforms lack posix IPC and must rely on slower TCP based inter-{% endraw %}
+
+{% raw %}# process communications.  ipc_mode is set to 'tcp' on such systems.{% endraw %}
+
+{% raw %}#ipc_mode: ipc{% endraw %}
+
+
+{% raw %}# Overwrite the default tcp ports used by the minion when ipc_mode is set to 'tcp'{% endraw %}
+
+{% raw %}#tcp_pub_port: 4510{% endraw %}
+
+{% raw %}#tcp_pull_port: 4511{% endraw %}
+
+
+{% raw %}# Passing very large events can cause the minion to consume large amounts of{% endraw %}
+
+{% raw %}# memory. This value tunes the maximum size of a message allowed onto the{% endraw %}
+
+{% raw %}# minion event bus. The value is expressed in bytes.{% endraw %}
+
+{% raw %}#max_event_size: 1048576{% endraw %}
+
+
+{% raw %}# When a minion starts up it sends a notification on the event bus with a tag{% endraw %}
+
+{% raw %}# that looks like this: `salt/minion/<minion_id>/start`. For historical reasons{% endraw %}
+
+{% raw %}# the minion also sends a similar event with an event tag like this:{% endraw %}
+
+{% raw %}# `minion_start`. This duplication can cause a lot of clutter on the event bus{% endraw %}
+
+{% raw %}# when there are many minions. Set `enable_legacy_startup_events: False` in the{% endraw %}
+
+{% raw %}# minion config to ensure only the `salt/minion/<minion_id>/start` events are{% endraw %}
+
+{% raw %}# sent. Beginning with the `Sodium` Salt release this option will default to{% endraw %}
+
+{% raw %}# `False`{% endraw %}
+
+{% raw %}#enable_legacy_startup_events: True{% endraw %}
+
+
+{% raw %}# To detect failed master(s) and fire events on connect/disconnect, set{% endraw %}
+
+{% raw %}# master_alive_interval to the number of seconds to poll the masters for{% endraw %}
+
+{% raw %}# connection events.{% endraw %}
+
+{% raw %}#{% endraw %}
+
+{% raw %}#master_alive_interval: 30{% endraw %}
+
+
+{% raw %}# The minion can include configuration from other files. To enable this,{% endraw %}
+
+{% raw %}# pass a list of paths to this option. The paths can be either relative or{% endraw %}
+
+{% raw %}# absolute; if relative, they are considered to be relative to the directory{% endraw %}
+
+{% raw %}# the main minion configuration file lives in (this file). Paths can make use{% endraw %}
+
+{% raw %}# of shell-style globbing. If no files are matched by a path passed to this{% endraw %}
+
+{% raw %}# option then the minion will log a warning message.{% endraw %}
+
+{% raw %}#{% endraw %}
+
+{% raw %}# Include a config file from some other path:{% endraw %}
+
+{% raw %}# include: /etc/salt/extra_config{% endraw %}
+
+{% raw %}#{% endraw %}
+
+{% raw %}# Include config from several files and directories:{% endraw %}
+
+{% raw %}#include:{% endraw %}
+
+{% raw %}#  - /etc/salt/extra_config{% endraw %}
+
+{% raw %}#  - /etc/roles/webserver{% endraw %}
+
+
+{% raw %}# The syndic minion can verify that it is talking to the correct master via the{% endraw %}
+
+{% raw %}# key fingerprint of the higher-level master with the "syndic_finger" config.{% endraw %}
+
+{% raw %}#syndic_finger: ''{% endraw %}
+
+{% raw %}#{% endraw %}
+
+{% raw %}#{% endraw %}
+
+{% raw %}#{% endraw %}
+
+{% raw %}#####   Minion module management     #####{% endraw %}
+
+{% raw %}##########################################{% endraw %}
+
+{% raw %}# Disable specific modules. This allows the admin to limit the level of{% endraw %}
+
+{% raw %}# access the master has to the minion.  The default here is the empty list,{% endraw %}
+
+{% raw %}# below is an example of how this needs to be formatted in the config file{% endraw %}
+
+{% raw %}#disable_modules:{% endraw %}
+
+{% raw %}#  - cmdmod{% endraw %}
+
+{% raw %}#  - test{% endraw %}
+
+{% raw %}#disable_returners: []{% endraw %}
+
+
+{% raw %}# This is the reverse of disable_modules.  The default, like disable_modules, is the empty list,{% endraw %}
+
+{% raw %}# but if this option is set to *anything* then *only* those modules will load.{% endraw %}
+
+{% raw %}# Note that this is a very large hammer and it can be quite difficult to keep the minion working{% endraw %}
+
+{% raw %}# the way you think it should since Salt uses many modules internally itself.  At a bare minimum{% endraw %}
+
+{% raw %}# you need the following enabled or else the minion won't start.{% endraw %}
+
+{% raw %}#whitelist_modules:{% endraw %}
+
+{% raw %}#  - cmdmod{% endraw %}
+
+{% raw %}#  - test{% endraw %}
+
+{% raw %}#  - config{% endraw %}
+
+
+{% raw %}# Modules can be loaded from arbitrary paths. This enables the easy deployment{% endraw %}
+
+{% raw %}# of third party modules. Modules for returners and minions can be loaded.{% endraw %}
+
+{% raw %}# Specify a list of extra directories to search for minion modules and{% endraw %}
+
+{% raw %}# returners. These paths must be fully qualified!{% endraw %}
+
+{% raw %}#module_dirs: []{% endraw %}
+
+{% raw %}#returner_dirs: []{% endraw %}
+
+{% raw %}#states_dirs: []{% endraw %}
+
+{% raw %}#render_dirs: []{% endraw %}
+
+{% raw %}#utils_dirs: []{% endraw %}
+
+{% raw %}#{% endraw %}
+
+{% raw %}# A module provider can be statically overwritten or extended for the minion{% endraw %}
+
+{% raw %}# via the providers option, in this case the default module will be{% endraw %}
+
+{% raw %}# overwritten by the specified module. In this example the pkg module will{% endraw %}
+
+{% raw %}# be provided by the yumpkg5 module instead of the system default.{% endraw %}
+
+{% raw %}#providers:{% endraw %}
+
+{% raw %}#  pkg: yumpkg5{% endraw %}
+
+{% raw %}#{% endraw %}
+
+{% raw %}# Enable Cython modules searching and loading. (Default: False){% endraw %}
+
+{% raw %}#cython_enable: False{% endraw %}
+
+{% raw %}#{% endraw %}
+
+{% raw %}# Specify a max size (in bytes) for modules on import. This feature is currently{% endraw %}
+
+{% raw %}# only supported on *nix operating systems and requires psutil.{% endraw %}
+
+{% raw %}# modules_max_memory: -1{% endraw %}
+
+
+
+{% raw %}#####    State Management Settings    #####{% endraw %}
+
+{% raw %}###########################################{% endraw %}
+
+{% raw %}# The default renderer to use in SLS files. This is configured as a{% endraw %}
+
+{% raw %}# pipe-delimited expression. For example, jinja|yaml will first run jinja{% endraw %}
+
+{% raw %}# templating on the SLS file, and then load the result as YAML. This syntax is{% endraw %}
+
+{% raw %}# documented in further depth at the following URL:{% endraw %}
+
+{% raw %}#{% endraw %}
+
+{% raw %}# https://docs.saltstack.com/en/latest/ref/renderers/#composing-renderers{% endraw %}
+
+{% raw %}#{% endraw %}
+
+{% raw %}# NOTE: The "shebang" prefix (e.g. "#!jinja|yaml") described in the{% endraw %}
+
+{% raw %}# documentation linked above is for use in an SLS file to override the default{% endraw %}
+
+{% raw %}# renderer, it should not be used when configuring the renderer here.{% endraw %}
+
+{% raw %}#{% endraw %}
+
+{% raw %}#renderer: jinja|yaml{% endraw %}
+
+{% raw %}#{% endraw %}
+
+{% raw %}# The failhard option tells the minions to stop immediately after the first{% endraw %}
+
+{% raw %}# failure detected in the state execution. Defaults to False.{% endraw %}
+
+{% raw %}#failhard: False{% endraw %}
+
+{% raw %}#{% endraw %}
+
+{% raw %}# Reload the modules prior to a highstate run.{% endraw %}
+
+{% raw %}#autoload_dynamic_modules: True{% endraw %}
+
+{% raw %}#{% endraw %}
+
+{% raw %}# clean_dynamic_modules keeps the dynamic modules on the minion in sync with{% endraw %}
+
+{% raw %}# the dynamic modules on the master, this means that if a dynamic module is{% endraw %}
+
+{% raw %}# not on the master it will be deleted from the minion. By default, this is{% endraw %}
+
+{% raw %}# enabled and can be disabled by changing this value to False.{% endraw %}
+
+{% raw %}#clean_dynamic_modules: True{% endraw %}
+
+{% raw %}#{% endraw %}
+
+{% raw %}# Normally, the minion is not isolated to any single environment on the master{% endraw %}
+
+{% raw %}# when running states, but the environment can be isolated on the minion side{% endraw %}
+
+{% raw %}# by statically setting it. Remember that the recommended way to manage{% endraw %}
+
+{% raw %}# environments is to isolate via the top file.{% endraw %}
+
+{% raw %}#environment: None{% endraw %}
+
+{% raw %}#{% endraw %}
+
+{% raw %}# Isolates the pillar environment on the minion side. This functions the same{% endraw %}
+
+{% raw %}# as the environment setting, but for pillar instead of states.{% endraw %}
+
+{% raw %}#pillarenv: None{% endraw %}
+
+{% raw %}#{% endraw %}
+
+{% raw %}# Set this option to True to force the pillarenv to be the same as the{% endraw %}
+
+{% raw %}# effective saltenv when running states. Note that if pillarenv is specified,{% endraw %}
+
+{% raw %}# this option will be ignored.{% endraw %}
+
+{% raw %}#pillarenv_from_saltenv: False{% endraw %}
+
+{% raw %}#{% endraw %}
+
+{% raw %}# Set this option to 'True' to force a 'KeyError' to be raised whenever an{% endraw %}
+
+{% raw %}# attempt to retrieve a named value from pillar fails. When this option is set{% endraw %}
+
+{% raw %}# to 'False', the failed attempt returns an empty string. Default is 'False'.{% endraw %}
+
+{% raw %}#pillar_raise_on_missing: False{% endraw %}
+
+{% raw %}#{% endraw %}
+
+{% raw %}# If using the local file directory, then the state top file name needs to be{% endraw %}
+
+{% raw %}# defined, by default this is top.sls.{% endraw %}
+
+{% raw %}#state_top: top.sls{% endraw %}
+
+{% raw %}#{% endraw %}
+
+{% raw %}# Run states when the minion daemon starts. To enable, set startup_states to:{% endraw %}
+
+{% raw %}# 'highstate' -- Execute state.highstate{% endraw %}
+
+{% raw %}# 'sls' -- Read in the sls_list option and execute the named sls files{% endraw %}
+
+{% raw %}# 'top' -- Read top_file option and execute based on that file on the Master{% endraw %}
+
+{% raw %}#startup_states: ''{% endraw %}
+
+{% raw %}#{% endraw %}
+
+{% raw %}# List of states to run when the minion starts up if startup_states is 'sls':{% endraw %}
+
+{% raw %}#sls_list:{% endraw %}
+
+{% raw %}#  - edit.vim{% endraw %}
+
+{% raw %}#  - hyper{% endraw %}
+
+{% raw %}#{% endraw %}
+
+{% raw %}# List of grains to pass in start event when minion starts up:{% endraw %}
+
+{% raw %}#start_event_grains:{% endraw %}
+
+{% raw %}#  - machine_id{% endraw %}
+
+{% raw %}#  - uuid{% endraw %}
+
+{% raw %}#{% endraw %}
+
+{% raw %}# Top file to execute if startup_states is 'top':{% endraw %}
+
+{% raw %}#top_file: ''{% endraw %}
+
+
+{% raw %}# Automatically aggregate all states that have support for mod_aggregate by{% endraw %}
+
+{% raw %}# setting to True. Or pass a list of state module names to automatically{% endraw %}
+
+{% raw %}# aggregate just those types.{% endraw %}
+
+{% raw %}#{% endraw %}
+
+{% raw %}# state_aggregate:{% endraw %}
+
+{% raw %}#   - pkg{% endraw %}
+
+{% raw %}#{% endraw %}
+
+{% raw %}#state_aggregate: False{% endraw %}
+
+
+{% raw %}# Disable requisites during state runs by specifying a single requisite{% endraw %}
+
+{% raw %}# or a list of requisites to disable.{% endraw %}
+
+{% raw %}#{% endraw %}
+
+{% raw %}# disabled_requisites: require_in{% endraw %}
+
+{% raw %}#{% endraw %}
+
+{% raw %}# disabled_requisites:{% endraw %}
+
+{% raw %}#     - require{% endraw %}
+
+{% raw %}#     - require_in{% endraw %}
+
+
+{% raw %}#####     File Directory Settings    #####{% endraw %}
+
+{% raw %}##########################################{% endraw %}
+
+{% raw %}# The Salt Minion can redirect all file server operations to a local directory,{% endraw %}
+
+{% raw %}# this allows for the same state tree that is on the master to be used if{% endraw %}
+
+{% raw %}# copied completely onto the minion. This is a literal copy of the settings on{% endraw %}
+
+{% raw %}# the master but used to reference a local directory on the minion.{% endraw %}
+
+
+{% raw %}# Set the file client. The client defaults to looking on the master server for{% endraw %}
+
+{% raw %}# files, but can be directed to look at the local file directory setting{% endraw %}
+
+{% raw %}# defined below by setting it to "local". Setting a local file_client runs the{% endraw %}
+
+{% raw %}# minion in masterless mode.{% endraw %}
+
+{% raw %}#file_client: remote{% endraw %}
+
+
+{% raw %}# The file directory works on environments passed to the minion, each environment{% endraw %}
+
+{% raw %}# can have multiple root directories, the subdirectories in the multiple file{% endraw %}
+
+{% raw %}# roots cannot match, otherwise the downloaded files will not be able to be{% endraw %}
+
+{% raw %}# reliably ensured. A base environment is required to house the top file.{% endraw %}
+
+{% raw %}# Example:{% endraw %}
+
+{% raw %}# file_roots:{% endraw %}
+
+{% raw %}#   base:{% endraw %}
+
+{% raw %}#     - /srv/salt/{% endraw %}
+
+{% raw %}#   dev:{% endraw %}
+
+{% raw %}#     - /srv/salt/dev/services{% endraw %}
+
+{% raw %}#     - /srv/salt/dev/states{% endraw %}
+
+{% raw %}#   prod:{% endraw %}
+
+{% raw %}#     - /srv/salt/prod/services{% endraw %}
+
+{% raw %}#     - /srv/salt/prod/states{% endraw %}
+
+{% raw %}#{% endraw %}
+
+{% raw %}#file_roots:{% endraw %}
+
+{% raw %}#  base:{% endraw %}
+
+{% raw %}#    - /srv/salt{% endraw %}
+
+
+{% raw %}# Uncomment the line below if you do not want the file_server to follow{% endraw %}
+
+{% raw %}# symlinks when walking the filesystem tree. This is set to True{% endraw %}
+
+{% raw %}# by default. Currently this only applies to the default roots{% endraw %}
+
+{% raw %}# fileserver_backend.{% endraw %}
+
+{% raw %}#fileserver_followsymlinks: False{% endraw %}
+
+{% raw %}#{% endraw %}
+
+{% raw %}# Uncomment the line below if you do not want symlinks to be{% endraw %}
+
+{% raw %}# treated as the files they are pointing to. By default this is set to{% endraw %}
+
+{% raw %}# False. By uncommenting the line below, any detected symlink while listing{% endraw %}
+
+{% raw %}# files on the Master will not be returned to the Minion.{% endraw %}
+
+{% raw %}#fileserver_ignoresymlinks: True{% endraw %}
+
+{% raw %}#{% endraw %}
+
+{% raw %}# By default, the Salt fileserver recurses fully into all defined environments{% endraw %}
+
+{% raw %}# to attempt to find files. To limit this behavior so that the fileserver only{% endraw %}
+
+{% raw %}# traverses directories with SLS files and special Salt directories like _modules,{% endraw %}
+
+{% raw %}# enable the option below. This might be useful for installations where a file root{% endraw %}
+
+{% raw %}# has a very large number of files and performance is negatively impacted. Default{% endraw %}
+
+{% raw %}# is False.{% endraw %}
+
+{% raw %}#fileserver_limit_traversal: False{% endraw %}
+
+
+{% raw %}# The hash_type is the hash to use when discovering the hash of a file on{% endraw %}
+
+{% raw %}# the local fileserver. The default is sha256, but md5, sha1, sha224, sha384{% endraw %}
+
+{% raw %}# and sha512 are also supported.{% endraw %}
+
+{% raw %}#{% endraw %}
+
+{% raw %}# WARNING: While md5 and sha1 are also supported, do not use them due to the{% endraw %}
+
+{% raw %}# high chance of possible collisions and thus security breach.{% endraw %}
+
+{% raw %}#{% endraw %}
+
+{% raw %}# Warning: Prior to changing this value, the minion should be stopped and all{% endraw %}
+
+{% raw %}# Salt caches should be cleared.{% endraw %}
+
+{% raw %}#hash_type: sha256{% endraw %}
+
+
+{% raw %}# The Salt pillar is searched for locally if file_client is set to local. If{% endraw %}
+
+{% raw %}# this is the case, and pillar data is defined, then the pillar_roots need to{% endraw %}
+
+{% raw %}# also be configured on the minion:{% endraw %}
+
+{% raw %}#pillar_roots:{% endraw %}
+
+{% raw %}#  base:{% endraw %}
+
+{% raw %}#    - /srv/pillar{% endraw %}
+
+
+{% raw %}# Set a hard-limit on the size of the files that can be pushed to the master.{% endraw %}
+
+{% raw %}# It will be interpreted as megabytes. Default: 100{% endraw %}
+
+{% raw %}#file_recv_max_size: 100{% endraw %}
+
+{% raw %}#{% endraw %}
+
+{% raw %}#{% endraw %}
+
+{% raw %}######        Security settings       #####{% endraw %}
+
+{% raw %}###########################################{% endraw %}
+
+{% raw %}# Enable "open mode", this mode still maintains encryption, but turns off{% endraw %}
+
+{% raw %}# authentication, this is only intended for highly secure environments or for{% endraw %}
+
+{% raw %}# the situation where your keys end up in a bad state. If you run in open mode{% endraw %}
+
+{% raw %}# you do so at your own risk!{% endraw %}
+
+{% raw %}#open_mode: False{% endraw %}
+
+
+{% raw %}# The size of key that should be generated when creating new keys.{% endraw %}
+
+{% raw %}#keysize: 2048{% endraw %}
+
+
+{% raw %}# Enable permissive access to the salt keys.  This allows you to run the{% endraw %}
+
+{% raw %}# master or minion as root, but have a non-root group be given access to{% endraw %}
+
+{% raw %}# your pki_dir.  To make the access explicit, root must belong to the group{% endraw %}
+
+{% raw %}# you've given access to. This is potentially quite insecure.{% endraw %}
+
+{% raw %}#permissive_pki_access: False{% endraw %}
+
+
+{% raw %}# The state_verbose and state_output settings can be used to change the way{% endraw %}
+
+{% raw %}# state system data is printed to the display. By default all data is printed.{% endraw %}
+
+{% raw %}# The state_verbose setting can be set to True or False, when set to False{% endraw %}
+
+{% raw %}# all data that has a result of True and no changes will be suppressed.{% endraw %}
+
+{% raw %}#state_verbose: True{% endraw %}
+
+
+{% raw %}# The state_output setting controls which results will be output full multi line{% endraw %}
+
+{% raw %}# full, terse - each state will be full/terse{% endraw %}
+
+{% raw %}# mixed - only states with errors will be full{% endraw %}
+
+{% raw %}# changes - states with changes and errors will be full{% endraw %}
+
+{% raw %}# full_id, mixed_id, changes_id and terse_id are also allowed;{% endraw %}
+
+{% raw %}# when set, the state ID will be used as name in the output{% endraw %}
+
+{% raw %}#state_output: full{% endraw %}
+
+
+{% raw %}# The state_output_diff setting changes whether or not the output from{% endraw %}
+
+{% raw %}# successful states is returned. Useful when even the terse output of these{% endraw %}
+
+{% raw %}# states is cluttering the logs. Set it to True to ignore them.{% endraw %}
+
+{% raw %}#state_output_diff: False{% endraw %}
+
+
+{% raw %}# The state_output_profile setting changes whether profile information{% endraw %}
+
+{% raw %}# will be shown for each state run.{% endraw %}
+
+{% raw %}#state_output_profile: True{% endraw %}
+
+
+{% raw %}# Fingerprint of the master public key to validate the identity of your Salt master{% endraw %}
+
+{% raw %}# before the initial key exchange. The master fingerprint can be found by running{% endraw %}
+
+{% raw %}# "salt-key -f master.pub" on the Salt master.{% endraw %}
+
+{% raw %}#master_finger: ''{% endraw %}
+
+
+{% raw %}# Use TLS/SSL encrypted connection between master and minion.{% endraw %}
+
+{% raw %}# Can be set to a dictionary containing keyword arguments corresponding to Python's{% endraw %}
+
+{% raw %}# 'ssl.wrap_socket' method.{% endraw %}
+
+{% raw %}# Default is None.{% endraw %}
+
+{% raw %}#ssl:{% endraw %}
+
+{% raw %}#    keyfile: <path_to_keyfile>{% endraw %}
+
+{% raw %}#    certfile: <path_to_certfile>{% endraw %}
+
+{% raw %}#    ssl_version: PROTOCOL_TLSv1_2{% endraw %}
+
+
+{% raw %}# Grains to be sent to the master on authentication to check if the minion's key{% endraw %}
+
+{% raw %}# will be accepted automatically. Needs to be configured on the master.{% endraw %}
+
+{% raw %}#autosign_grains:{% endraw %}
+
+{% raw %}#  - uuid{% endraw %}
+
+{% raw %}#  - server_id{% endraw %}
+
+
+
+{% raw %}######        Reactor Settings        #####{% endraw %}
+
+{% raw %}###########################################{% endraw %}
+
+{% raw %}# Define a salt reactor. See https://docs.saltstack.com/en/latest/topics/reactor/{% endraw %}
+
+{% raw %}#reactor: []{% endraw %}
+
+
+{% raw %}#Set the TTL for the cache of the reactor configuration.{% endraw %}
+
+{% raw %}#reactor_refresh_interval: 60{% endraw %}
+
+
+{% raw %}#Configure the number of workers for the runner/wheel in the reactor.{% endraw %}
+
+{% raw %}#reactor_worker_threads: 10{% endraw %}
+
+
+{% raw %}#Define the queue size for workers in the reactor.{% endraw %}
+
+{% raw %}#reactor_worker_hwm: 10000{% endraw %}
+
+
+
+{% raw %}######         Thread settings        #####{% endraw %}
+
+{% raw %}###########################################{% endraw %}
+
+{% raw %}# Disable multiprocessing support, by default when a minion receives a{% endraw %}
+
+{% raw %}# publication a new process is spawned and the command is executed therein.{% endraw %}
+
+{% raw %}#{% endraw %}
+
+{% raw %}# WARNING: Disabling multiprocessing may result in substantial slowdowns{% endraw %}
+
+{% raw %}# when processing large pillars. See https://github.com/saltstack/salt/issues/38758{% endraw %}
+
+{% raw %}# for a full explanation.{% endraw %}
+
+{% raw %}#multiprocessing: True{% endraw %}
+
+
+{% raw %}# Limit the maximum amount of processes or threads created by salt-minion.{% endraw %}
+
+{% raw %}# This is useful to avoid resource exhaustion in case the minion receives more{% endraw %}
+
+{% raw %}# publications than it is able to handle, as it limits the number of spawned{% endraw %}
+
+{% raw %}# processes or threads. -1 is the default and disables the limit.{% endraw %}
+
+{% raw %}#process_count_max: -1{% endraw %}
+
+
+
+{% raw %}#####         Logging settings       #####{% endraw %}
+
+{% raw %}##########################################{% endraw %}
+
+{% raw %}# The location of the minion log file{% endraw %}
+
+{% raw %}# The minion log can be sent to a regular file, local path name, or network{% endraw %}
+
+{% raw %}# location. Remote logging works best when configured to use rsyslogd(8) (e.g.:{% endraw %}
+
+{% raw %}# ``file:///dev/log``), with rsyslogd(8) configured for network logging. The URI{% endraw %}
+
+{% raw %}# format is: <file|udp|tcp>://<host|socketpath>:<port-if-required>/<log-facility>{% endraw %}
+
+{% raw %}#log_file: /var/log/salt/minion{% endraw %}
+
+{% raw %}#log_file: file:///dev/log{% endraw %}
+
+{% raw %}#log_file: udp://loghost:10514{% endraw %}
+
+{% raw %}#{% endraw %}
+
+{% raw %}#log_file: /var/log/salt/minion{% endraw %}
+
+{% raw %}#key_logfile: /var/log/salt/key{% endraw %}
+
+
+{% raw %}# The level of messages to send to the console.{% endraw %}
+
+{% raw %}# One of 'garbage', 'trace', 'debug', 'info', 'warning', 'error', 'critical'.{% endraw %}
+
+{% raw %}#{% endraw %}
+
+{% raw %}# The following log levels are considered INSECURE and may log sensitive data:{% endraw %}
+
+{% raw %}# ['garbage', 'trace', 'debug']{% endraw %}
+
+{% raw %}#{% endraw %}
+
+{% raw %}# Default: 'warning'{% endraw %}
+
+{% raw %}#log_level: warning{% endraw %}
+
+
+{% raw %}# The level of messages to send to the log file.{% endraw %}
+
+{% raw %}# One of 'garbage', 'trace', 'debug', info', 'warning', 'error', 'critical'.{% endraw %}
+
+{% raw %}# If using 'log_granular_levels' this must be set to the highest desired level.{% endraw %}
+
+{% raw %}# Default: 'warning'{% endraw %}
+
+{% raw %}#log_level_logfile:{% endraw %}
+
+
+{% raw %}# The date and time format used in log messages. Allowed date/time formatting{% endraw %}
+
+{% raw %}# can be seen here: http://docs.python.org/library/time.html#time.strftime{% endraw %}
+
+{% raw %}#log_datefmt: '%H:%M:%S'{% endraw %}
+
+{% raw %}#log_datefmt_logfile: '%Y-%m-%d %H:%M:%S'{% endraw %}
+
+
+{% raw %}# The format of the console logging messages. Allowed formatting options can{% endraw %}
+
+{% raw %}# be seen here: http://docs.python.org/library/logging.html#logrecord-attributes{% endraw %}
+
+{% raw %}#{% endraw %}
+
+{% raw %}# Console log colors are specified by these additional formatters:{% endraw %}
+
+{% raw %}#{% endraw %}
+
+{% raw %}# %(colorlevel)s{% endraw %}
+
+{% raw %}# %(colorname)s{% endraw %}
+
+{% raw %}# %(colorprocess)s{% endraw %}
+
+{% raw %}# %(colormsg)s{% endraw %}
+
+{% raw %}#{% endraw %}
+
+{% raw %}# Since it is desirable to include the surrounding brackets, '[' and ']', in{% endraw %}
+
+{% raw %}# the coloring of the messages, these color formatters also include padding as{% endraw %}
+
+{% raw %}# well.  Color LogRecord attributes are only available for console logging.{% endraw %}
+
+{% raw %}#{% endraw %}
+
+{% raw %}#log_fmt_console: '%(colorlevel)s %(colormsg)s'{% endraw %}
+
+{% raw %}#log_fmt_console: '[%(levelname)-8s] %(message)s'{% endraw %}
+
+{% raw %}#{% endraw %}
+
+{% raw %}#log_fmt_logfile: '%(asctime)s,%(msecs)03d [%(name)-17s][%(levelname)-8s] %(message)s'{% endraw %}
+
+
+{% raw %}# This can be used to control logging levels more specificically.  This{% endraw %}
+
+{% raw %}# example sets the main salt library at the 'warning' level, but sets{% endraw %}
+
+{% raw %}# 'salt.modules' to log at the 'debug' level:{% endraw %}
+
+{% raw %}#   log_granular_levels:{% endraw %}
+
+{% raw %}#     'salt': 'warning'{% endraw %}
+
+{% raw %}#     'salt.modules': 'debug'{% endraw %}
+
+{% raw %}#{% endraw %}
+
+{% raw %}#log_granular_levels: {}{% endraw %}
+
+
+{% raw %}# To diagnose issues with minions disconnecting or missing returns, ZeroMQ{% endraw %}
+
+{% raw %}# supports the use of monitor sockets to log connection events. This{% endraw %}
+
+{% raw %}# feature requires ZeroMQ 4.0 or higher.{% endraw %}
+
+{% raw %}#{% endraw %}
+
+{% raw %}# To enable ZeroMQ monitor sockets, set 'zmq_monitor' to 'True' and log at a{% endraw %}
+
+{% raw %}# debug level or higher.{% endraw %}
+
+{% raw %}#{% endraw %}
+
+{% raw %}# A sample log event is as follows:{% endraw %}
+
+{% raw %}#{% endraw %}
+
+{% raw %}# [DEBUG   ] ZeroMQ event: {'endpoint': 'tcp://127.0.0.1:4505', 'event': 512,{% endraw %}
+
+{% raw %}# 'value': 27, 'description': 'EVENT_DISCONNECTED'}{% endraw %}
+
+{% raw %}#{% endraw %}
+
+{% raw %}# All events logged will include the string 'ZeroMQ event'. A connection event{% endraw %}
+
+{% raw %}# should be logged as the minion starts up and initially connects to the{% endraw %}
+
+{% raw %}# master. If not, check for debug log level and that the necessary version of{% endraw %}
+
+{% raw %}# ZeroMQ is installed.{% endraw %}
+
+{% raw %}#{% endraw %}
+
+{% raw %}#zmq_monitor: False{% endraw %}
+
+
+{% raw %}# Number of times to try to authenticate with the salt master when reconnecting{% endraw %}
+
+{% raw %}# to the master{% endraw %}
+
+{% raw %}#tcp_authentication_retries: 5{% endraw %}
+
+
+{% raw %}######      Module configuration      #####{% endraw %}
+
+{% raw %}###########################################{% endraw %}
+
+{% raw %}# Salt allows for modules to be passed arbitrary configuration data, any data{% endraw %}
+
+{% raw %}# passed here in valid yaml format will be passed on to the salt minion modules{% endraw %}
+
+{% raw %}# for use. It is STRONGLY recommended that a naming convention be used in which{% endraw %}
+
+{% raw %}# the module name is followed by a . and then the value. Also, all top level{% endraw %}
+
+{% raw %}# data must be applied via the yaml dict construct, some examples:{% endraw %}
+
+{% raw %}#{% endraw %}
+
+{% raw %}# You can specify that all modules should run in test mode:{% endraw %}
+
+{% raw %}#test: True{% endraw %}
+
+{% raw %}#{% endraw %}
+
+{% raw %}# A simple value for the test module:{% endraw %}
+
+{% raw %}#test.foo: foo{% endraw %}
+
+{% raw %}#{% endraw %}
+
+{% raw %}# A list for the test module:{% endraw %}
+
+{% raw %}#test.bar: [baz,quo]{% endraw %}
+
+{% raw %}#{% endraw %}
+
+{% raw %}# A dict for the test module:{% endraw %}
+
+{% raw %}#test.baz: {spam: sausage, cheese: bread}{% endraw %}
+
+{% raw %}#{% endraw %}
+
+{% raw %}#{% endraw %}
+
+{% raw %}######      Update settings          ######{% endraw %}
+
+{% raw %}###########################################{% endraw %}
+
+{% raw %}# Using the features in Esky, a salt minion can both run as a frozen app and{% endraw %}
+
+{% raw %}# be updated on the fly. These options control how the update process{% endraw %}
+
+{% raw %}# (saltutil.update()) behaves.{% endraw %}
+
+{% raw %}#{% endraw %}
+
+{% raw %}# The url for finding and downloading updates. Disabled by default.{% endraw %}
+
+{% raw %}#update_url: False{% endraw %}
+
+{% raw %}#{% endraw %}
+
+{% raw %}# The list of services to restart after a successful update. Empty by default.{% endraw %}
+
+{% raw %}#update_restart_services: []{% endraw %}
+
+
+
+{% raw %}######      Keepalive settings        ######{% endraw %}
+
+{% raw %}############################################{% endraw %}
+
+{% raw %}# ZeroMQ now includes support for configuring SO_KEEPALIVE if supported by{% endraw %}
+
+{% raw %}# the OS. If connections between the minion and the master pass through{% endraw %}
+
+{% raw %}# a state tracking device such as a firewall or VPN gateway, there is{% endraw %}
+
+{% raw %}# the risk that it could tear down the connection the master and minion{% endraw %}
+
+{% raw %}# without informing either party that their connection has been taken away.{% endraw %}
+
+{% raw %}# Enabling TCP Keepalives prevents this from happening.{% endraw %}
+
+
+{% raw %}# Overall state of TCP Keepalives, enable (1 or True), disable (0 or False){% endraw %}
+
+{% raw %}# or leave to the OS defaults (-1), on Linux, typically disabled. Default True, enabled.{% endraw %}
+
+{% raw %}#tcp_keepalive: True{% endraw %}
+
+
+{% raw %}# How long before the first keepalive should be sent in seconds. Default 300{% endraw %}
+
+{% raw %}# to send the first keepalive after 5 minutes, OS default (-1) is typically 7200 seconds{% endraw %}
+
+{% raw %}# on Linux see /proc/sys/net/ipv4/tcp_keepalive_time.{% endraw %}
+
+{% raw %}#tcp_keepalive_idle: 300{% endraw %}
+
+
+{% raw %}# How many lost probes are needed to consider the connection lost. Default -1{% endraw %}
+
+{% raw %}# to use OS defaults, typically 9 on Linux, see /proc/sys/net/ipv4/tcp_keepalive_probes.{% endraw %}
+
+{% raw %}#tcp_keepalive_cnt: -1{% endraw %}
+
+
+{% raw %}# How often, in seconds, to send keepalives after the first one. Default -1 to{% endraw %}
+
+{% raw %}# use OS defaults, typically 75 seconds on Linux, see{% endraw %}
+
+{% raw %}# /proc/sys/net/ipv4/tcp_keepalive_intvl.{% endraw %}
+
+{% raw %}#tcp_keepalive_intvl: -1{% endraw %}
+
+
+
+{% raw %}######   Windows Software settings    ######{% endraw %}
+
+{% raw %}############################################{% endraw %}
+
+{% raw %}# Location of the repository cache file on the master:{% endraw %}
+
+{% raw %}#win_repo_cachefile: 'salt://win/repo/winrepo.p'{% endraw %}
+
+
+
+{% raw %}######      Returner  settings        ######{% endraw %}
+
+{% raw %}############################################{% endraw %}
+
+{% raw %}# Default Minion returners. Can be a comma delimited string or a list:{% endraw %}
+
+{% raw %}#{% endraw %}
+
+{% raw %}#return: mysql{% endraw %}
+
+{% raw %}#{% endraw %}
+
+{% raw %}#return: mysql,slack,redis{% endraw %}
+
+{% raw %}#{% endraw %}
+
+{% raw %}#return:{% endraw %}
+
+{% raw %}#  - mysql{% endraw %}
+
+{% raw %}#  - hipchat{% endraw %}
+
+{% raw %}#  - slack{% endraw %}
+
+
+
+{% raw %}######    Miscellaneous  settings     ######{% endraw %}
+
+{% raw %}############################################{% endraw %}
+
+{% raw %}# Default match type for filtering events tags: startswith, endswith, find, regex, fnmatch{% endraw %}
+
+{% raw %}#event_match_type: startswith{% endraw %}
