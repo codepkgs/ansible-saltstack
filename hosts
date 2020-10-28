@@ -6,9 +6,7 @@
 10.0.100.2      ansible_user=root
 
 [salt_master:vars]
-; salt_role = master
-autosign_hosts = [ "10.0.100.*", "*.fdisk.cc" ]
+autosign_hosts = [ "*.fdisk.cc" ]
 
 [salt_minion:vars]
-; salt_role = minion
 salt_master = ["10.0.100.1"]
