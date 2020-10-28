@@ -51,6 +51,6 @@ salt_master = ["10.0.100.1"]
 # master 到所有的 minion 已经设置的免密码登录
 ansible-playbook main.yaml
 
-# master 到所有的 minion 没有设置的免密码登录
+# master 到所有的 minion 没有设置免密码登录
 ansible-playbook main.yaml -k
 ```
